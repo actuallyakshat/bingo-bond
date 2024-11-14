@@ -3,7 +3,7 @@
 import prisma from "@/db";
 import { revalidatePath } from "next/cache";
 
-export async function createPlan({
+export async function createActivity({
   name,
   position,
   cardId,

@@ -5,6 +5,9 @@ import Link from "next/link";
 import AddFriendDialog from "./_components/AddFriendDialog";
 import Grid from "./_components/Grid";
 import DeletePlanDialog from "./_components/DeletePlanDialog";
+import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
+import BondNotFound from "./_components/BondNotFound";
 
 interface BondPageProps {
   params: {
@@ -13,6 +16,7 @@ interface BondPageProps {
 }
 
 export default async function BondPage({ params }: BondPageProps) {
+  const { userId } = await auth();
   const bond = await prisma.bond.findUnique({
     where: {
       id: params.id,
@@ -29,7 +33,9 @@ export default async function BondPage({ params }: BondPageProps) {
 
   console.log(bond?.bingoCard);
 
-  if (!bond) return <div>Bond not found</div>;
+  if (!bond) {
+    return <BondNotFound />;
+  }
 
   return (
     <>
@@ -56,9 +62,13 @@ export default async function BondPage({ params }: BondPageProps) {
             </Button>
           </Link>
 
-          <AddFriendDialog bondId={bond.id} />
+          {bond.createdById == userId && (
+            <>
+              <AddFriendDialog bondId={bond.id} />
 
-          <DeletePlanDialog bondId={bond.id} />
+              <DeletePlanDialog bondId={bond.id} />
+            </>
+          )}
         </div>
       </header>
 

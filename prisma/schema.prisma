@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  name         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  createdBonds Bond[]   @relation("admin_bond")
-  memberships  Member[] @relation("user_memberships")
-  invites      Invite[]
+  id               String   @id @default(uuid())
+  email            String   @unique
+  name             String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  createdBonds     Bond[]   @relation("admin_bond")
+  memberships      Member[] @relation("user_memberships")
+  invites          Invite[]
+  emailPreferences Boolean  @default(true)
 }
 
 model Invite {
@@ -64,6 +65,7 @@ model BingoCard {
   bondId    String      @unique
   bond      Bond        @relation(fields: [bondId], references: [id], onDelete: Cascade)
   cells     BingoCell[]
+  plans     Plan[]
 
   @@index([bondId])
 }
@@ -75,7 +77,7 @@ model BingoCell {
   completed Boolean   @default(false)
   cardId    String
   card      BingoCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  Plan      Plan?
+  plan      Plan?
 
   @@unique([cardId, position])
   @@index([cardId])
@@ -87,6 +89,8 @@ model Plan {
   updatedAt       DateTime  @updatedAt
   cellId          String    @unique
   cell            BingoCell @relation(fields: [cellId], references: [id], onDelete: Cascade)
+  cardId          String
+  card            BingoCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
   planDate        DateTime
   planDescription String
   memory          Memory?

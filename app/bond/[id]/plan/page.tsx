@@ -1,7 +1,10 @@
-import React from "react";
-import AddFriendDialog from "../_components/AddFriendDialog";
-import BackToBond from "../_components/BackToBond";
 import prisma from "@/db";
+import BackToBond from "../_components/BackToBond";
+
+import CreatePlanDialog from "./_components/CreatePlanDialog";
+import { Button } from "@/components/ui/button";
+import { Cloud } from "lucide-react";
+import BondNotFound from "../_components/BondNotFound";
 
 export default async function Plan({ params }: { params: { id: string } }) {
   const bond = await prisma.bond.findUnique({
@@ -12,18 +15,37 @@ export default async function Plan({ params }: { params: { id: string } }) {
       members: true,
       bingoCard: {
         include: {
-          cells: true,
+          plans: {
+            include: {
+              cell: true,
+            },
+          },
         },
       },
     },
   });
 
-  if (!bond) return <div>Bond not found</div>;
+  if (!bond || !bond.bingoCard) return <BondNotFound />;
+
+  const unplannedIncompleteCells = await prisma.bingoCell.findMany({
+    where: {
+      cardId: bond.bingoCard.id,
+      completed: false,
+      plan: null,
+    },
+    include: {
+      plan: true,
+    },
+  });
 
   return (
     <>
       <header className="pt-4 px-3 w-full flex items-center justify-between">
         <BackToBond bondId={params.id} />
+        <Button variant={"link"}>
+          <Cloud />
+          Memories
+        </Button>
       </header>
 
       <div className="max-w-screen-md mx-auto py-5">
@@ -36,14 +58,28 @@ export default async function Plan({ params }: { params: { id: string } }) {
           </p>
         </div>
 
+        <CreatePlanDialog
+          bond={bond}
+          cardId={bond.bingoCard.id}
+          unplannedActivites={unplannedIncompleteCells}
+        />
+
+        <hr className="pt-2" />
+
         <div>
-          {bond.bingoCard?.cells.map((cell) => (
-            <div key={cell.id}>
-              <h2 className="text-xl font-bold">{cell.activity}</h2>
-              <p className="text-sm text-muted-foreground">{cell.position}</p>
-            </div>
-          ))}
+          {bond.bingoCard.plans.map((plan) => {
+            return <div key={plan.id}>{plan.cell.activity}</div>;
+          })}
         </div>
+
+        {bond.bingoCard.plans.length == 0 && (
+          <div className="mt-2">
+            <h2 className="text-xl font-bold">No Plans Yet</h2>
+            <p className="text-sm text-muted-foreground">
+              Create your first plan to get started
+            </p>
+          </div>
+        )}
       </div>
     </>
   );

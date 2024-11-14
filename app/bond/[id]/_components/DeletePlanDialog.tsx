@@ -21,8 +21,10 @@ export default function DeletePlanDialog({ bondId }: { bondId: string }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await deletePlan({ bondId: bondId });
+      setLoading(true);
       toast.loading("Deleting bond", { id: "delete-bond" });
+      const response = await deletePlan({ bondId: bondId });
+      setLoading(false);
       if (response.success) {
         toast.success("Plan deleted successfully", { id: "delete-bond" });
         router.push("/dashboard");

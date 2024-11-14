@@ -9,7 +9,13 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useClerk } from "@clerk/nextjs";
-import { LayoutDashboard, LogOut, Mail, UserCircle } from "lucide-react";
+import {
+  Images,
+  LayoutDashboard,
+  LogOut,
+  Mail,
+  UserCircle,
+} from "lucide-react";
 import Link from "next/link";
 
 const menuItems = [
@@ -19,14 +25,17 @@ const menuItems = [
     icon: <LayoutDashboard className="size-6" />,
     className: "size-6",
   },
-
   {
     href: "/dashboard/invites",
     label: "Invites",
     icon: <Mail className="size-6" />,
     className: "size-6",
   },
-
+  {
+    href: "/dashboard/gallery",
+    label: "Gallery",
+    icon: <Images className="size-6" />,
+  },
   {
     href: "/dashboard/profile",
     label: "Profile",

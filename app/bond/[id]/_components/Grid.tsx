@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { BingoCard, BingoCell, Bond } from "@prisma/client";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { createPlan } from "../_actions/actions";
+import { createActivity } from "../_actions/actions";
 
 interface BingoCardWithCells extends BingoCard {
   cells: BingoCell[];
@@ -70,7 +70,7 @@ export default function Grid({ data }: { data: DataProp }) {
       }
 
       setLoading(true);
-      const response = await createPlan({
+      const response = await createActivity({
         cardId: data.bingoCard!.id,
         position: selectedCell,
         name,
@@ -137,6 +137,11 @@ export default function Grid({ data }: { data: DataProp }) {
             <Button type="submit" disabled={loading}>
               {loading ? "Saving..." : "Save"}
             </Button>
+            {cellData ? (
+              <Button variant={"outline"} type="button">
+                Delete
+              </Button>
+            ) : null}
           </form>
         </DialogContent>
       </Dialog>
