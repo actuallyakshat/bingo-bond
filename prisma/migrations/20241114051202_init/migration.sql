@@ -8,6 +8,17 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "Invite" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "userId" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    "bondId" TEXT NOT NULL,
+    CONSTRAINT "Invite_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "Invite_bondId_fkey" FOREIGN KEY ("bondId") REFERENCES "Bond" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "Bond" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
@@ -32,7 +43,6 @@ CREATE TABLE "Member" (
 -- CreateTable
 CREATE TABLE "BingoCard" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "title" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     "bondId" TEXT NOT NULL,

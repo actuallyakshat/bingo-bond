@@ -1,5 +1,4 @@
 "use client";
-import { LayoutDashboard, LogOut, UserCircle } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -9,28 +8,36 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
 import { useClerk } from "@clerk/nextjs";
-import { useGlobalStore } from "@/context/GlobalContext";
+import { LayoutDashboard, LogOut, Mail, UserCircle } from "lucide-react";
+import Link from "next/link";
 
 const menuItems = [
   {
     href: "/dashboard",
     label: "Dashboard",
-    icon: LayoutDashboard,
-    className: "size-5",
+    icon: <LayoutDashboard className="size-6" />,
+    className: "size-6",
   },
+
   {
-    href: "#",
+    href: "/dashboard/invites",
+    label: "Invites",
+    icon: <Mail className="size-6" />,
+    className: "size-6",
+  },
+
+  {
+    href: "/dashboard/profile",
     label: "Profile",
-    icon: UserCircle,
-    className: "size-5",
+    icon: <UserCircle className="size-6" />,
+    className: "size-6",
   },
 ];
 
 const footerItem = {
   label: "Logout",
-  icon: LogOut,
+  icon: <LogOut className="size-6" />,
   className: "h-4 w-4 text-destructive",
 };
 
@@ -47,15 +54,12 @@ export default function SidebarComponent() {
         <SidebarMenu className="px-0">
           {menuItems.map((item, index) => (
             <SidebarMenuItem key={index}>
-              <SidebarMenuButton>
-                <Link
-                  href={item.href}
-                  className="flex items-center gap-2 py-2 px-3"
-                >
-                  <item.icon className={item.className} />
+              <Link href={item.href} className="flex items-center gap-2 ">
+                <SidebarMenuButton className="pl-4">
+                  {item.icon}
                   {item.label}
-                </Link>
-              </SidebarMenuButton>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
@@ -66,10 +70,10 @@ export default function SidebarComponent() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <button
-                className="flex w-full items-center gap-2"
+                className="flex w-full items-center gap-2 text-destructive hover:text-destructive/80"
                 onClick={() => signOut()}
               >
-                <footerItem.icon className={footerItem.className} />
+                {footerItem.icon}
                 {footerItem.label}
               </button>
             </SidebarMenuButton>

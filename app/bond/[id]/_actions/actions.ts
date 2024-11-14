@@ -42,3 +42,154 @@ export async function createPlan({
     return { success: false, error: "Failed to create a new bond" };
   }
 }
+
+export async function addMember({
+  bondId,
+  email,
+}: {
+  bondId: string;
+  email: string;
+}) {
+  try {
+    if (!bondId || !email) {
+      return {
+        success: false,
+        error: "Bond ID and email are required",
+      };
+    }
+
+    const user = await prisma.user.findFirst({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) return { success: false, error: "User not found" };
+
+    const bond = await prisma.bond.findUnique({
+      where: {
+        id: bondId,
+      },
+      include: {
+        members: true,
+      },
+    });
+
+    if (!bond) return { success: false, error: "Bond not found" };
+    if (bond.members.some((member) => member.userId == user.id))
+      return { success: false, error: "User is already a member" };
+
+    const userId = user.id;
+
+    const invite = await prisma.invite.create({
+      data: {
+        bondId,
+        userId,
+      },
+    });
+
+    console.log("NEW INVITE", invite);
+
+    return { success: true, data: invite };
+  } catch (e) {
+    const error = e as Error;
+    console.error(error.message);
+    return { success: false, error: "Failed to create an invite" };
+  }
+}
+
+export async function deletePlan({ bondId }: { bondId: string }) {
+  try {
+    const cell = await prisma.bond.delete({
+      where: {
+        id: bondId,
+      },
+    });
+
+    revalidatePath("/bond/" + bondId);
+    return { success: true, data: cell };
+  } catch (e) {
+    const error = e as Error;
+    console.error(error.message);
+    return { success: false, error: "Failed to delete a plan" };
+  }
+}
+
+export async function acceptInvite({ inviteId }: { inviteId: string }) {
+  try {
+    const invite = await prisma.invite.findUnique({
+      where: {
+        id: inviteId,
+      },
+    });
+
+    if (!invite) return { success: false, error: "Invite not found" };
+
+    const bond = await prisma.bond.findUnique({
+      where: {
+        id: invite.bondId,
+      },
+      include: {
+        members: true,
+      },
+    });
+
+    if (!bond) return { success: false, error: "Bond not found" };
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: invite.userId,
+      },
+    });
+
+    if (!user) return { success: false, error: "User not found" };
+
+    if (bond.members.some((member) => member.userId == user.id))
+      return { success: false, error: "User is already a member" };
+
+    const member = await prisma.member.create({
+      data: {
+        bondId: bond.id,
+        userId: user.id,
+      },
+    });
+
+    await prisma.invite.delete({
+      where: {
+        id: inviteId,
+      },
+    });
+
+    revalidatePath("/dashboard/invites");
+    return { success: true, data: member };
+  } catch (e) {
+    const error = e as Error;
+    console.error(error.message);
+    return { success: false, error: "Failed to accept the invite" };
+  }
+}
+
+export async function rejectInvite({ inviteId }: { inviteId: string }) {
+  try {
+    const invite = await prisma.invite.findUnique({
+      where: {
+        id: inviteId,
+      },
+    });
+
+    if (!invite) return { success: false, error: "Invite not found" };
+
+    await prisma.invite.delete({
+      where: {
+        id: inviteId,
+      },
+    });
+
+    revalidatePath("/dashboard/invites");
+    return { success: true, data: invite };
+  } catch (e) {
+    const error = e as Error;
+    console.error(error.message);
+    return { success: false, error: "Failed to reject the invite" };
+  }
+}

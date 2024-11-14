@@ -15,6 +15,17 @@ model User {
   updatedAt    DateTime @updatedAt
   createdBonds Bond[]   @relation("admin_bond")
   memberships  Member[] @relation("user_memberships")
+  invites      Invite[]
+}
+
+model Invite {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bondId    String
+  bond      Bond     @relation(fields: [bondId], references: [id], onDelete: Cascade)
 }
 
 model Bond {
@@ -27,6 +38,7 @@ model Bond {
   createdBy   User       @relation(fields: [createdById], references: [id], name: "admin_bond")
   members     Member[]
   bingoCard   BingoCard?
+  invites     Invite[]
 
   @@index([createdById])
 }
@@ -63,7 +75,41 @@ model BingoCell {
   completed Boolean   @default(false)
   cardId    String
   card      BingoCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  Plan      Plan?
 
   @@unique([cardId, position])
   @@index([cardId])
+}
+
+model Plan {
+  id              String    @id @default(uuid())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  cellId          String    @unique
+  cell            BingoCell @relation(fields: [cellId], references: [id], onDelete: Cascade)
+  planDate        DateTime
+  planDescription String
+  memory          Memory?
+
+  @@index([cellId])
+}
+
+model Memory {
+  id         String    @id @default(uuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  planId     String    @unique
+  plan       Plan      @relation(fields: [planId], references: [id], onDelete: Cascade)
+  memoryDate DateTime
+  pictures   Picture[]
+}
+
+model Picture {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  memoryId  String   @unique
+  memory    Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  url       String
+  caption   String
 }
