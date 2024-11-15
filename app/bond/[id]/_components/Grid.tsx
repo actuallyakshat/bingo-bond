@@ -14,7 +14,8 @@ import { Label } from "@/components/ui/label";
 import { BingoCard, BingoCell, Bond } from "@prisma/client";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { createActivity } from "../_actions/actions";
+import { createActivity, deleteActivity } from "../_actions/actions";
+import { convertToPascalCase } from "@/lib/utils";
 
 interface BingoCardWithCells extends BingoCard {
   cells: BingoCell[];
@@ -32,7 +33,6 @@ export default function Grid({ data }: { data: DataProp }) {
     {}
   );
 
-  // Set the initial value when a cell is selected
   useEffect(() => {
     if (selectedCell !== null) {
       const cellData = data.bingoCard?.cells.find(
@@ -60,8 +60,11 @@ export default function Grid({ data }: { data: DataProp }) {
   async function handleSubmit() {
     try {
       if (!name.trim()) {
-        toast.error("Please enter a plan");
-        return;
+        throw new Error("Please enter a valid name");
+      }
+
+      if (name.length > 24) {
+        throw new Error("Activity name is too long");
       }
 
       if (selectedCell === null) {
@@ -69,17 +72,49 @@ export default function Grid({ data }: { data: DataProp }) {
         return;
       }
 
+      const formattedName = convertToPascalCase(name);
+
+      console.log(formattedName);
+
       setLoading(true);
+
       const response = await createActivity({
         cardId: data.bingoCard!.id,
         position: selectedCell,
-        name,
+        name: formattedName,
       });
 
       if (response.success && response.data) {
         toast.success("Plan saved!");
         handleOpenChange(selectedCell, false);
         setName("");
+      }
+    } catch (e) {
+      const error = e as Error;
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDeleteActivity(position: number) {
+    try {
+      setLoading(true);
+      const response = await deleteActivity({
+        cardId: data.bingoCard!.id,
+        position,
+      });
+
+      setLoading(false);
+
+      if (response.success) {
+        toast.success("Activity deleted successfully");
+        setOpenDialogs((prev) => ({
+          ...prev,
+          [position]: false,
+        }));
+      } else {
+        toast.error(response.error);
       }
     } catch (e) {
       const error = e as Error;
@@ -130,6 +165,7 @@ export default function Grid({ data }: { data: DataProp }) {
               <Label>Plan</Label>
               <Input
                 placeholder="Trip to Manali"
+                maxLength={24}
                 value={name}
                 onChange={(e) => setName(e.currentTarget.value)}
               />
@@ -138,7 +174,12 @@ export default function Grid({ data }: { data: DataProp }) {
               {loading ? "Saving..." : "Save"}
             </Button>
             {cellData ? (
-              <Button variant={"outline"} type="button">
+              <Button
+                variant={"outline"}
+                type="button"
+                disabled={loading}
+                onClick={() => handleDeleteActivity(Number(selectedCell))}
+              >
                 Delete
               </Button>
             ) : null}

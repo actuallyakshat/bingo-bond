@@ -58,10 +58,6 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  useEffect(() => {
-    console.log(clientUser);
-  }, [clientUser]);
-
   if (loading) return <Loading />;
 
   return (

@@ -31,8 +31,6 @@ export default async function BondPage({ params }: BondPageProps) {
     },
   });
 
-  console.log(bond?.bingoCard);
-
   if (!bond) {
     return <BondNotFound />;
   }
@@ -74,7 +72,9 @@ export default async function BondPage({ params }: BondPageProps) {
 
       <div className="max-w-screen-md mx-auto py-5">
         <div className="space-y-1.5">
-          <h1 className="text-center font-extrabold text-4xl">{bond.name}</h1>
+          <h1 className="text-center font-extrabold text-4xl text-primary">
+            {bond.name}
+          </h1>
           <p className="text-center text-muted-foreground text-sm font-medium">
             {bond.description}
           </p>

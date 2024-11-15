@@ -43,6 +43,32 @@ export async function createActivity({
   }
 }
 
+export async function deleteActivity({
+  cardId,
+  position,
+}: {
+  cardId: string;
+  position: number;
+}) {
+  try {
+    const cell = await prisma.bingoCell.delete({
+      where: {
+        cardId_position: {
+          cardId,
+          position,
+        },
+      },
+    });
+
+    revalidatePath("/bond/" + cardId);
+    return { success: true, data: cell };
+  } catch (e) {
+    const error = e as Error;
+    console.error(error.message);
+    return { success: false, error: "Failed to delete a plan" };
+  }
+}
+
 export async function addMember({
   bondId,
   email,
@@ -87,8 +113,6 @@ export async function addMember({
         userId,
       },
     });
-
-    console.log("NEW INVITE", invite);
 
     return { success: true, data: invite };
   } catch (e) {

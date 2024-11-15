@@ -1,12 +1,15 @@
 import prisma from "@/db";
 import BackToBond from "../_components/BackToBond";
 
-import CreatePlanDialog from "./_components/CreatePlanDialog";
 import { Button } from "@/components/ui/button";
 import { Cloud } from "lucide-react";
 import BondNotFound from "../_components/BondNotFound";
+import CreatePlanDialog from "./_components/CreatePlanDialog";
 
-export default async function Plan({ params }: { params: { id: string } }) {
+import Link from "next/link";
+import PlanCard from "./_components/PlanCard";
+
+export default async function PlanPage({ params }: { params: { id: string } }) {
   const bond = await prisma.bond.findUnique({
     where: {
       id: params.id,
@@ -42,16 +45,18 @@ export default async function Plan({ params }: { params: { id: string } }) {
     <>
       <header className="pt-4 px-3 w-full flex items-center justify-between">
         <BackToBond bondId={params.id} />
-        <Button variant={"link"}>
-          <Cloud />
-          Memories
-        </Button>
+        <Link href={"/bond/" + params.id + "/memories"}>
+          <Button variant={"link"}>
+            <Cloud />
+            Memories
+          </Button>
+        </Link>
       </header>
 
       <div className="max-w-screen-md mx-auto py-5">
         <div className="space-y-1.5">
           <h1 className="text-center font-extrabold text-4xl">
-            Plans for {bond.name}
+            Plans for <span className="text-primary">{bond.name}</span>
           </h1>
           <p className="text-center text-muted-foreground text-sm font-medium">
             {bond.description}
@@ -66,9 +71,9 @@ export default async function Plan({ params }: { params: { id: string } }) {
 
         <hr className="pt-2" />
 
-        <div>
+        <div className="grid lg:grid-cols-3 grid-cols-1 mt-3 gap-4">
           {bond.bingoCard.plans.map((plan) => {
-            return <div key={plan.id}>{plan.cell.activity}</div>;
+            return <PlanCard key={plan.id} plan={plan} bondId={bond.id} />;
           })}
         </div>
 

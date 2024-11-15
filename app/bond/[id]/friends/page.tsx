@@ -35,7 +35,7 @@ export default async function Friends({ params }: { params: { id: string } }) {
       <div className="max-w-screen-md mx-auto py-5">
         <div className="space-y-1.5">
           <h1 className="text-center font-extrabold text-4xl">
-            Members of {bond.name}
+            Members of <span className="text-primary">{bond.name}</span>
           </h1>
           <p className="text-center text-muted-foreground text-sm font-medium">
             {bond.members.length == 1

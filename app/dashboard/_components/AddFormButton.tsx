@@ -30,8 +30,7 @@ export default function AddBondButton() {
   async function handleSubmit() {
     try {
       const userId = clientUser && clientUser!.id;
-      console.log("reached");
-      console.log(userId);
+
       if (!userId) return;
 
       if (!name || !description) {
@@ -79,7 +78,6 @@ export default function AddBondButton() {
         <form
           className="flex flex-col gap-3"
           onSubmit={(e) => {
-            console.log("submitted");
             handleSubmit();
             e.preventDefault();
           }}

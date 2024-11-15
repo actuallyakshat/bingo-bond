@@ -24,8 +24,6 @@ export default async function Dashboard() {
     },
   });
 
-  console.log(data);
-
   return (
     <main className="flex-1 overflow-auto">
       <Header headerTitle="Your Bonds" />

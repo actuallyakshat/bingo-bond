@@ -20,7 +20,6 @@ export default function Profile() {
   const [allowSave, setAllowSave] = useState(false);
 
   useEffect(() => {
-    console.log(emailPreferences);
     if (
       name !== clientUser?.name ||
       emailPreferences !== clientUser?.emailPreferences

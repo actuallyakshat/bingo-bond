@@ -4,7 +4,8 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "updatedAt" DATETIME NOT NULL,
+    "emailPreferences" BOOLEAN NOT NULL DEFAULT true
 );
 
 -- CreateTable
@@ -26,7 +27,7 @@ CREATE TABLE "Bond" (
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     "createdById" TEXT NOT NULL,
-    CONSTRAINT "Bond_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Bond_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -79,7 +80,9 @@ CREATE TABLE "Memory" (
     "updatedAt" DATETIME NOT NULL,
     "planId" TEXT NOT NULL,
     "memoryDate" DATETIME NOT NULL,
-    CONSTRAINT "Memory_planId_fkey" FOREIGN KEY ("planId") REFERENCES "Plan" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "bondId" TEXT NOT NULL,
+    CONSTRAINT "Memory_planId_fkey" FOREIGN KEY ("planId") REFERENCES "Plan" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "Memory_bondId_fkey" FOREIGN KEY ("bondId") REFERENCES "Bond" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable

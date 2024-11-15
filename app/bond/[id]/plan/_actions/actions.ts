@@ -55,3 +55,54 @@ export async function createPlan({
     return { success: false, error: "Failed to create a new plan" };
   }
 }
+
+export async function deletePlan({
+  bondId,
+  planId,
+}: {
+  bondId: string;
+  planId: string;
+}) {
+  try {
+    const plan = await prisma.plan.delete({
+      where: {
+        id: planId,
+      },
+    });
+
+    revalidatePath("/bond/" + bondId + "/plan");
+    return { success: true, data: plan };
+  } catch (e) {
+    const error = e as Error;
+    console.error(error.message);
+    return { success: false, error: "Failed to delete a plan" };
+  }
+}
+
+export async function createMemory({
+  planId,
+  bondId,
+  memoryDate,
+}: {
+  planId: string;
+  bondId: string;
+  memoryDate: Date;
+}) {
+  try {
+    const newMemory = await prisma.memory.create({
+      data: {
+        planId: planId,
+        bondId: bondId,
+        memoryDate: memoryDate,
+      },
+    });
+
+    revalidatePath("/bond/" + bondId + "/plan");
+    revalidatePath("/bond/" + bondId + "/memories");
+    return { success: true, data: newMemory };
+  } catch (e) {
+    const error = e as Error;
+    console.error(error.message);
+    return { success: false, error: "Failed to create a new memory" };
+  }
+}

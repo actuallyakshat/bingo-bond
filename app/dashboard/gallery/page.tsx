@@ -38,8 +38,6 @@ export default async function Gallery() {
     },
   });
 
-  console.log(user);
-
   return (
     <div>
       <Header headerTitle="Gallery" />
