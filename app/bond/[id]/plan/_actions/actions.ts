@@ -89,6 +89,23 @@ export async function createMemory({
   memoryDate: Date;
 }) {
   try {
+    const plan = await prisma.plan.findUnique({
+      where: {
+        id: planId,
+      },
+    });
+
+    if (!plan) throw new Error("Plan not found");
+
+    await prisma.plan.update({
+      where: {
+        id: planId,
+      },
+      data: {
+        completed: true,
+      },
+    });
+
     const newMemory = await prisma.memory.create({
       data: {
         planId: planId,

@@ -72,13 +72,12 @@ model BingoCard {
 }
 
 model BingoCell {
-  id        String    @id @default(uuid())
-  position  Int
-  activity  String ///@encrypted
-  completed Boolean   @default(false)
-  cardId    String
-  card      BingoCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  plan      Plan?
+  id       String    @id @default(uuid())
+  position Int
+  activity String ///@encrypted
+  cardId   String
+  card     BingoCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  plan     Plan?
 
   @@unique([cardId, position])
   @@index([cardId])
@@ -95,6 +94,7 @@ model Plan {
   planDate        DateTime
   planDescription String ///@encrypted
   memory          Memory?
+  completed       Boolean   @default(false)
 
   @@index([cellId])
 }
@@ -115,8 +115,7 @@ model Picture {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  memoryId  String   @unique
+  memoryId  String
   memory    Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
   url       String ///@encrypted
-  caption   String ///@encrypted
 }

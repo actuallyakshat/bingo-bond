@@ -55,7 +55,6 @@ CREATE TABLE "BingoCell" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "position" INTEGER NOT NULL,
     "activity" TEXT NOT NULL,
-    "completed" BOOLEAN NOT NULL DEFAULT false,
     "cardId" TEXT NOT NULL,
     CONSTRAINT "BingoCell_cardId_fkey" FOREIGN KEY ("cardId") REFERENCES "BingoCard" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -69,6 +68,7 @@ CREATE TABLE "Plan" (
     "cardId" TEXT NOT NULL,
     "planDate" DATETIME NOT NULL,
     "planDescription" TEXT NOT NULL,
+    "completed" BOOLEAN NOT NULL DEFAULT false,
     CONSTRAINT "Plan_cellId_fkey" FOREIGN KEY ("cellId") REFERENCES "BingoCell" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "Plan_cardId_fkey" FOREIGN KEY ("cardId") REFERENCES "BingoCard" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );

@@ -16,25 +16,31 @@ import { createMemory, deletePlan } from "../_actions/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-interface PlanWithCells extends Plan {
-  cell: BingoCell;
+interface BingoCellWithPlan extends BingoCell {
+  plan:
+    | (Plan & {
+        cell: BingoCell;
+      })
+    | null;
 }
 
 export default function PlanCard({
   plan,
   bondId,
 }: {
-  plan: PlanWithCells;
+  plan: BingoCellWithPlan;
   bondId: string;
 }) {
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!plan.plan) return;
+
     try {
       const res = await deletePlan({
         bondId: bondId,
-        planId: plan.id,
+        planId: plan.plan.id,
       });
       if (res.success) {
         toast.success("Plan deleted successfully");
@@ -49,9 +55,11 @@ export default function PlanCard({
 
   async function addToMemories(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!plan.plan) return;
+
     try {
       const res = await createMemory({
-        planId: plan.id,
+        planId: plan.plan.id,
         bondId: bondId,
         memoryDate: new Date(),
       });
@@ -68,6 +76,8 @@ export default function PlanCard({
     }
   }
 
+  if (!plan.plan) return null;
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -75,21 +85,19 @@ export default function PlanCard({
           variant={"outline"}
           className="p-3 rounded-xl block border h-full text-left shadow-md hover:-translate-y-0.5 hover:shadow-lg transition-all duration-350"
         >
-          <h2 className="font-light text-xl font-serif">
-            {plan.cell.activity}
-          </h2>
+          <h2 className="font-light text-xl font-serif">{plan.activity}</h2>
           <p className="text-sm text-muted-foreground">
-            {plan.planDescription}
+            {plan.plan.planDescription}
           </p>
           <p className="flex items-center gap-2 mt-4 text-sm">
             <Calendar className="size-4" />
-            {plan.planDate.toLocaleDateString()}
+            {plan.plan.planDate.toLocaleDateString()}
           </p>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{plan.cell.activity}</DialogTitle>
+          <DialogTitle>{plan.activity}</DialogTitle>
           <DialogDescription>
             If you have completed this plan, you can add this to your memories
             inorder to preserve some valuable memories!

@@ -1,11 +1,9 @@
 import prisma from "@/db";
 import BackToBond from "../_components/BackToBond";
-
 import { Button } from "@/components/ui/button";
 import { Cloud } from "lucide-react";
 import BondNotFound from "../_components/BondNotFound";
 import CreatePlanDialog from "./_components/CreatePlanDialog";
-
 import Link from "next/link";
 import PlanCard from "./_components/PlanCard";
 
@@ -19,6 +17,9 @@ export default async function PlanPage({ params }: { params: { id: string } }) {
       bingoCard: {
         include: {
           plans: {
+            orderBy: {
+              planDate: "asc",
+            },
             include: {
               cell: true,
             },
@@ -33,11 +34,23 @@ export default async function PlanPage({ params }: { params: { id: string } }) {
   const unplannedIncompleteCells = await prisma.bingoCell.findMany({
     where: {
       cardId: bond.bingoCard.id,
-      completed: false,
-      plan: null,
+      OR: [
+        {
+          plan: null,
+        },
+        {
+          plan: {
+            completed: false,
+          },
+        },
+      ],
     },
     include: {
-      plan: true,
+      plan: {
+        include: {
+          cell: true,
+        },
+      },
     },
   });
 
@@ -72,16 +85,16 @@ export default async function PlanPage({ params }: { params: { id: string } }) {
         <hr className="pt-2" />
 
         <div className="grid lg:grid-cols-3 grid-cols-1 mt-3 gap-4">
-          {bond.bingoCard.plans.map((plan) => {
-            return <PlanCard key={plan.id} plan={plan} bondId={bond.id} />;
+          {unplannedIncompleteCells.map((cell) => {
+            return <PlanCard key={cell.id} plan={cell} bondId={bond.id} />;
           })}
         </div>
 
-        {bond.bingoCard.plans.length == 0 && (
-          <div className="mt-2">
+        {unplannedIncompleteCells.length == 0 && (
+          <div>
             <h2 className="text-xl font-bold">No Plans Yet</h2>
             <p className="text-sm text-muted-foreground">
-              Create your first plan to get started
+              Create some plans or revisit memories maybe?
             </p>
           </div>
         )}

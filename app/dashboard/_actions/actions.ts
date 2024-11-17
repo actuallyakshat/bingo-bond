@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/db";
+import { convertToTitleCase } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 
 interface CreateBondInput {
@@ -15,9 +16,11 @@ export async function createBond({
   userId,
 }: CreateBondInput) {
   try {
+    const titleCaseName = convertToTitleCase(name);
+
     const newRoom = await prisma.bond.create({
       data: {
-        name,
+        name: titleCaseName,
         description,
         createdById: userId,
       },

@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { convertToTitleCase } from "@/lib/utils";
 import { BingoCard, BingoCell, Bond } from "@prisma/client";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createActivity, deleteActivity } from "../_actions/actions";
-import { convertToPascalCase } from "@/lib/utils";
 
 interface BingoCardWithCells extends BingoCard {
   cells: BingoCell[];
@@ -72,7 +72,7 @@ export default function Grid({ data }: { data: DataProp }) {
         return;
       }
 
-      const formattedName = convertToPascalCase(name);
+      const formattedName = convertToTitleCase(name);
 
       console.log(formattedName);
 
@@ -140,7 +140,9 @@ export default function Grid({ data }: { data: DataProp }) {
             onClick={() => setSelectedCell(i)}
           >
             {cellData ? (
-              <p className="font-bold text-lg text-wrap">{cellData.activity}</p>
+              <p className="font-bold text-base text-wrap">
+                {cellData.activity}
+              </p>
             ) : (
               <p className="text-muted-foreground text-xs">Enter plan</p>
             )}

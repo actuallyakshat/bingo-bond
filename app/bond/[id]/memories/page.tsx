@@ -58,12 +58,11 @@ export default async function MemoriesPage({
           <hr className="mt-4" />
         </div>
 
-        {bond.memories.map((memory) => (
-          <div key={memory.id}>
-            <h3>{memory.plan.cell.activity}</h3>
-            <p>{memory.plan.planDescription}</p>
-          </div>
-        ))}
+        <div className="mt-8 flex flex-col gap-4">
+          {bond.memories.map((memory) => (
+            <MemoryCard memory={memory} key={memory.id} />
+          ))}
+        </div>
 
         {bond.memories.length == 0 && (
           <div className="mt-5">
@@ -74,5 +73,19 @@ export default async function MemoriesPage({
         )}
       </div>
     </>
+  );
+}
+
+function MemoryCard({ memory }: { memory: any }) {
+  return (
+    <Link
+      key={memory.id}
+      href={"/bond/" + memory.bondId + "/memories/" + memory.id}
+    >
+      <h3 className="font-extrabold text-2xl">{memory.plan.cell.activity}</h3>
+      <p className="text-sm font-medium text-muted-foreground">
+        {memory.plan.planDescription}
+      </p>
+    </Link>
   );
 }

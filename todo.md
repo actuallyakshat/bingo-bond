@@ -1,7 +1,7 @@
 - [x] Add email preferences
 - [ ] Improve friend request UI
 - [ ] Implement gallery section
-- [ ] Implement plans Section
+- [ ] Implement plans section
 - [ ] Add email reminders
 - [ ] Add image uploads with cloud storage
 - [ ] Add mobile responsiveness
