@@ -84,7 +84,7 @@ export default function PlanCard({
       <DialogTrigger asChild>
         <Button
           variant={"outline"}
-          className="p-3 rounded-xl block border h-full text-left shadow-md hover:-translate-y-0.5 hover:shadow-lg transition-all duration-350"
+          className="p-3 rounded-xl block border hover:border-primary/30 hover:shadow-primary/15 hover:bg-white h-full text-left shadow-md hover:-translate-y-0.5 hover:shadow-lg transition-all duration-350"
         >
           <h2 className="font-light text-xl font-serif">{cell.activity}</h2>
           <p className="text-sm text-muted-foreground">

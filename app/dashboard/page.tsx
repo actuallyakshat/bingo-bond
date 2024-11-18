@@ -27,7 +27,7 @@ export default async function Dashboard() {
   return (
     <main className="flex-1 overflow-auto">
       <Header headerTitle="Your Bonds" />
-      <div className="px-8">
+      <div className="px-10">
         <h2 className="text-2xl font-bold">Your Bonds</h2>
         <p className="text-sm text-muted-foreground">
           The list of bonds you are a part of

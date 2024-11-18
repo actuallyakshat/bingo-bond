@@ -9,21 +9,21 @@ export default async function Gallery() {
   const { userId } = await auth();
 
   if (!userId) {
-    return null; // Or redirect to login
+    return null;
   }
 
   const memories = await prisma.memory.findMany({
     where: {
       bond: {
         OR: [
-          { createdById: userId }, // Bonds created by the user
+          { createdById: userId },
           {
             members: {
               some: {
                 userId: userId,
               },
             },
-          }, // Bonds where user is a member
+          },
         ],
       },
     },
@@ -52,9 +52,9 @@ export default async function Gallery() {
   return (
     <div>
       <Header headerTitle="Gallery" />
-      <div className="px-7">
-        <h2 className="text-2xl font-bold mb-2">Gallery</h2>
-        <p className="text-muted-foreground mb-6">
+      <div className="px-10">
+        <h2 className="text-2xl font-bold">Gallery</h2>
+        <p className="text-muted-foreground text-sm mb-6">
           A collection of memories from your various bonds!
         </p>
 

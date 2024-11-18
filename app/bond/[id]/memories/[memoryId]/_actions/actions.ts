@@ -4,7 +4,6 @@ import prisma from "@/db";
 import { revalidatePath } from "next/cache";
 import { v2 as cloudinary } from "cloudinary";
 
-// Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
   api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
@@ -28,21 +27,17 @@ async function deleteFromCloudinary(url: string) {
   try {
     console.log("Starting Cloudinary deletion for URL:", url);
 
-    // Extract public_id from Cloudinary URL including the folder path
     const urlParts = url.split("/");
     console.log("URL parts:", urlParts);
 
-    // Find the index of 'upload' to get everything after it
     const uploadIndex = urlParts.indexOf("upload");
     if (uploadIndex === -1) {
       throw new Error("Invalid Cloudinary URL format");
     }
 
-    // Skip the version number (v1731923462) and join the remaining parts
     const relevantParts = urlParts.slice(uploadIndex + 2);
     console.log("Relevant parts after upload:", relevantParts);
 
-    // Join all parts except the last one's extension
     const lastPart = relevantParts[relevantParts.length - 1];
     const nameWithoutExtension = lastPart.split(".")[0];
     relevantParts[relevantParts.length - 1] = nameWithoutExtension;
@@ -156,7 +151,6 @@ export async function deleteMemory({ memoryId }: DeleteMemoryParams) {
       console.log("Cloudinary deletion results:", deletionResults);
     }
 
-    // Delete memory (this will cascade delete pictures from DB due to referential integrity)
     console.log("Deleting memory from database:", memoryId);
     await prisma.memory.delete({
       where: {
@@ -164,7 +158,6 @@ export async function deleteMemory({ memoryId }: DeleteMemoryParams) {
       },
     });
 
-    // Update plan status if it exists
     if (planId) {
       console.log("Updating plan status for planId:", planId);
       await prisma.plan.update({
@@ -193,7 +186,6 @@ export async function deleteImage({ pictureId }: DeleteImageParams) {
   try {
     console.log("Starting image deletion process for pictureId:", pictureId);
 
-    // First get the picture to get its URL
     const picture = await prisma.picture.findUnique({
       where: {
         id: pictureId,
@@ -219,12 +211,10 @@ export async function deleteImage({ pictureId }: DeleteImageParams) {
       bondId: picture.memory.bondId,
     });
 
-    // Delete from Cloudinary
     console.log("Attempting to delete from Cloudinary:", picture.url);
     const cloudinaryResult = await deleteFromCloudinary(picture.url);
     console.log("Cloudinary deletion result:", cloudinaryResult);
 
-    // Delete from database
     console.log("Deleting picture from database:", pictureId);
     await prisma.picture.delete({
       where: {

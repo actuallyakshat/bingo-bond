@@ -18,7 +18,7 @@ export default async function Invites() {
     <div>
       <Header headerTitle="Invites" />
 
-      <div className="px-7 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="px-10 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {invites.map((invite) => (
           <div
             key={invite.id}
@@ -34,7 +34,7 @@ export default async function Invites() {
 
         {invites.length == 0 && (
           <div className="mt-2">
-            <h2 className="text-xl font-bold">No Invites Yet</h2>
+            <h2 className="text-2xl font-bold">No Invites Yet</h2>
             <p className="text-sm text-muted-foreground">
               Invite your friends to create a bond
             </p>

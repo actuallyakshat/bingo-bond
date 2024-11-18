@@ -1,4 +1,8 @@
 "use client";
+
+import { useState } from "react";
+import { toast } from "sonner";
+import { createPlan } from "../_actions/actions";
 import {
   Dialog,
   DialogContent,
@@ -7,8 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import React, { useEffect, useState } from "react";
-
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -16,28 +20,44 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import { Button } from "@/components/ui/button";
-import { DatePicker } from "@/components/ui/date-picker";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import { createPlan } from "../_actions/actions";
+import { DatePicker } from "@/components/ui/date-picker";
 
-//TODO: use the right interface
-interface Props {
-  bond: any;
+// Interfaces for unplanned activities and props
+interface UnplannedActivity {
+  id: string;
+  activity: string;
+  position: number;
+  plan: {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    cardId: string;
+    cellId: string;
+    planDate: Date;
+    planDescription: string;
+    memoryId: string | null;
+    completed: boolean;
+  } | null;
+}
+
+interface CreatePlanDialogProps {
+  bond: {
+    id: string;
+    name: string;
+    description: string | null;
+  };
   cardId: string;
-  unplannedActivites: any[];
+  unplannedActivities: UnplannedActivity[];
 }
 
 export default function CreatePlanDialog({
   bond,
   cardId,
-  unplannedActivites,
-}: Props) {
+  unplannedActivities,
+}: CreatePlanDialogProps) {
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [date, setDate] = useState<Date>(new Date());
@@ -93,19 +113,19 @@ export default function CreatePlanDialog({
             <Label>Plan</Label>
             <Select
               onValueChange={(value) => setSelectedPlan(value)}
-              disabled={unplannedActivites.length == 0}
+              disabled={unplannedActivities.length === 0}
             >
               <SelectTrigger className="w-full">
                 <SelectValue
                   placeholder={
-                    unplannedActivites.length == 0
-                      ? "No Unplanned Activites"
+                    unplannedActivities.length === 0
+                      ? "No Unplanned Activities"
                       : "Select Plan"
                   }
                 />
               </SelectTrigger>
               <SelectContent>
-                {unplannedActivites.map((cell: any) => (
+                {unplannedActivities.map((cell) => (
                   <SelectItem key={cell.id} value={cell.id}>
                     {cell.activity}
                   </SelectItem>
@@ -117,7 +137,7 @@ export default function CreatePlanDialog({
           <div className="space-y-1.5">
             <Label>Description</Label>
             <Textarea
-              disabled={selectedPlan == null}
+              disabled={!selectedPlan}
               placeholder="We are going to visit The Big Chill Cafe at Khan Market"
               onChange={(e) => setDescription(e.target.value)}
               className="max-h-[300px]"
@@ -129,7 +149,7 @@ export default function CreatePlanDialog({
             <DatePicker
               date={date}
               setDate={setDate}
-              disabled={selectedPlan == null}
+              disabled={!selectedPlan}
             />
           </div>
 

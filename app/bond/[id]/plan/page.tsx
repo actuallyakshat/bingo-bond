@@ -58,7 +58,7 @@ export default async function PlanPage({ params }: { params: { id: string } }) {
         <CreatePlanDialog
           bond={bond}
           cardId={bond.bingoCard.id}
-          unplannedActivites={unplannedCells}
+          unplannedActivities={unplannedCells}
         />
 
         <hr className="pt-2" />
