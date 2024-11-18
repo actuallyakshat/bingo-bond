@@ -54,6 +54,11 @@ export default function PlanCard({
     if (!cell.plan) return;
 
     try {
+      if (cell.plan.planDate > new Date()) {
+        toast.error("You cannot make memories of the future buddy");
+        return;
+      }
+
       const res = await createMemory({
         planId: cell.plan.id,
         bondId: bondId,
