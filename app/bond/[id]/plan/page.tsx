@@ -1,10 +1,10 @@
-import prisma from "@/db";
-import BackToBond from "../_components/BackToBond";
 import { Button } from "@/components/ui/button";
+import prisma from "@/db";
 import { Cloud } from "lucide-react";
+import Link from "next/link";
+import BackToBond from "../_components/BackToBond";
 import BondNotFound from "../_components/BondNotFound";
 import CreatePlanDialog from "./_components/CreatePlanDialog";
-import Link from "next/link";
 import PlanCard from "./_components/PlanCard";
 
 export default async function PlanPage({ params }: { params: { id: string } }) {
@@ -16,12 +16,9 @@ export default async function PlanPage({ params }: { params: { id: string } }) {
       members: true,
       bingoCard: {
         include: {
-          plans: {
-            orderBy: {
-              planDate: "asc",
-            },
+          cells: {
             include: {
-              cell: true,
+              plan: true,
             },
           },
         },
@@ -31,28 +28,10 @@ export default async function PlanPage({ params }: { params: { id: string } }) {
 
   if (!bond || !bond.bingoCard) return <BondNotFound />;
 
-  const unplannedIncompleteCells = await prisma.bingoCell.findMany({
-    where: {
-      cardId: bond.bingoCard.id,
-      OR: [
-        {
-          plan: null,
-        },
-        {
-          plan: {
-            completed: false,
-          },
-        },
-      ],
-    },
-    include: {
-      plan: {
-        include: {
-          cell: true,
-        },
-      },
-    },
-  });
+  const unplannedCells = bond.bingoCard.cells.filter((cell) => !cell.plan);
+  const plannedCells = bond.bingoCard.cells.filter(
+    (cell) => cell.plan! && !cell.plan.completed
+  );
 
   return (
     <>
@@ -66,7 +45,7 @@ export default async function PlanPage({ params }: { params: { id: string } }) {
         </Link>
       </header>
 
-      <div className="max-w-screen-md mx-auto py-5">
+      <div className="max-w-screen-md mx-auto pt-5">
         <div className="space-y-1.5">
           <h1 className="text-center font-extrabold text-4xl">
             Plans for <span className="text-primary">{bond.name}</span>
@@ -79,18 +58,18 @@ export default async function PlanPage({ params }: { params: { id: string } }) {
         <CreatePlanDialog
           bond={bond}
           cardId={bond.bingoCard.id}
-          unplannedActivites={unplannedIncompleteCells}
+          unplannedActivites={unplannedCells}
         />
 
         <hr className="pt-2" />
 
         <div className="grid lg:grid-cols-3 grid-cols-1 mt-3 gap-4">
-          {unplannedIncompleteCells.map((cell) => {
-            return <PlanCard key={cell.id} plan={cell} bondId={bond.id} />;
+          {plannedCells.map((cell) => {
+            return <PlanCard key={cell.id} cell={cell} bondId={bond.id} />;
           })}
         </div>
 
-        {unplannedIncompleteCells.length == 0 && (
+        {plannedCells.length == 0 && (
           <div>
             <h2 className="text-xl font-bold">No Plans Yet</h2>
             <p className="text-sm text-muted-foreground">

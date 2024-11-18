@@ -19,16 +19,6 @@ model User {
   emailPreferences Boolean  @default(true)
 }
 
-model Invite {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  bondId    String
-  bond      Bond     @relation(fields: [bondId], references: [id], onDelete: Cascade)
-}
-
 model Bond {
   id          String     @id @default(uuid())
   name        String ///@encrypted
@@ -43,6 +33,16 @@ model Bond {
   memories    Memory[]
 
   @@index([createdById])
+}
+
+model Invite {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bondId    String
+  bond      Bond     @relation(fields: [bondId], references: [id], onDelete: Cascade)
 }
 
 model Member {
@@ -93,22 +93,25 @@ model Plan {
   card            BingoCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
   planDate        DateTime
   planDescription String ///@encrypted
-  memory          Memory?
+  memory          Memory?   @relation(fields: [memoryId], references: [id])
+  memoryId        String?   @unique
   completed       Boolean   @default(false)
 
   @@index([cellId])
 }
 
 model Memory {
-  id         String    @id @default(uuid())
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  planId     String    @unique
-  plan       Plan      @relation(fields: [planId], references: [id], onDelete: Cascade)
-  memoryDate DateTime
-  pictures   Picture[]
-  bondId     String
-  bond       Bond      @relation(fields: [bondId], references: [id], onDelete: Cascade)
+  id          String    @id @default(uuid())
+  name        String ///@encrypted
+  description String ///@encrypted
+  date        DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  memoryDate  DateTime
+  pictures    Picture[]
+  bondId      String
+  bond        Bond      @relation(fields: [bondId], references: [id], onDelete: Cascade)
+  plan        Plan?
 }
 
 model Picture {

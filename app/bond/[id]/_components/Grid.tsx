@@ -12,13 +12,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { convertToTitleCase } from "@/lib/utils";
-import { BingoCard, BingoCell, Bond } from "@prisma/client";
+import { BingoCell, Bond, Plan } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createActivity, deleteActivity } from "../_actions/actions";
 
-interface BingoCardWithCells extends BingoCard {
-  cells: BingoCell[];
+interface BingoCellWithPlan extends BingoCell {
+  plan: Plan | null;
+}
+
+interface BingoCardWithCells extends BingoCellWithPlan {
+  cells: BingoCellWithPlan[];
 }
 
 interface DataProp extends Bond {
@@ -74,8 +78,6 @@ export default function Grid({ data }: { data: DataProp }) {
 
       const formattedName = convertToTitleCase(name);
 
-      console.log(formattedName);
-
       setLoading(true);
 
       const response = await createActivity({
@@ -126,6 +128,7 @@ export default function Grid({ data }: { data: DataProp }) {
 
   const gridItems = Array.from({ length: 16 }, (_, i) => {
     const cellData = data.bingoCard?.cells.find((cell) => cell.position === i);
+    const isCompleted = cellData?.plan?.completed;
 
     return (
       <Dialog
@@ -136,7 +139,11 @@ export default function Grid({ data }: { data: DataProp }) {
         <DialogTrigger asChild>
           <Button
             variant="outline"
-            className="w-full h-full aspect-square"
+            className={`w-full h-full aspect-square transition-colors ${
+              isCompleted
+                ? "bg-green-600 text-white hover:bg-green-700 hover:text-white"
+                : ""
+            }`}
             onClick={() => setSelectedCell(i)}
           >
             {cellData ? (

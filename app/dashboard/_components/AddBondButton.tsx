@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useGlobalStore } from "@/context/GlobalContext";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { toast } from "sonner";
 import { createBond } from "../_actions/actions";
 import { useRouter } from "next/navigation";
@@ -22,13 +22,13 @@ export default function AddBondButton() {
   const { clientUser } = useGlobalStore();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [open, setOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
-
-  async function handleSubmit() {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     try {
+      e.preventDefault();
       const userId = clientUser && clientUser!.id;
 
       if (!userId) return;
@@ -50,7 +50,7 @@ export default function AddBondButton() {
 
       if (response.success && response.data) {
         toast.success("Bond created successfully");
-        router.push("/bond/" + response.data.id);
+        setOpen(false);
       }
     } catch (e) {
       const error = e as Error;
@@ -60,8 +60,8 @@ export default function AddBondButton() {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
         <Button variant={"link"}>
           <Plus className="h-4 w-4" />
           Create Bond
@@ -78,8 +78,7 @@ export default function AddBondButton() {
         <form
           className="flex flex-col gap-3"
           onSubmit={(e) => {
-            handleSubmit();
-            e.preventDefault();
+            handleSubmit(e);
           }}
         >
           <div className="space-y-1.5">

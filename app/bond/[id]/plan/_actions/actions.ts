@@ -93,24 +93,34 @@ export async function createMemory({
       where: {
         id: planId,
       },
+      include: {
+        cell: {
+          select: {
+            activity: true,
+          },
+        },
+      },
     });
 
     if (!plan) throw new Error("Plan not found");
+
+    const newMemory = await prisma.memory.create({
+      data: {
+        bondId: bondId,
+        memoryDate: memoryDate,
+        name: plan.cell.activity,
+        description: plan.planDescription,
+        date: plan.planDate,
+      },
+    });
 
     await prisma.plan.update({
       where: {
         id: planId,
       },
       data: {
+        memoryId: newMemory.id,
         completed: true,
-      },
-    });
-
-    const newMemory = await prisma.memory.create({
-      data: {
-        planId: planId,
-        bondId: bondId,
-        memoryDate: memoryDate,
       },
     });
 

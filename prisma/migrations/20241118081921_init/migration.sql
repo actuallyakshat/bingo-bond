@@ -68,20 +68,23 @@ CREATE TABLE "Plan" (
     "cardId" TEXT NOT NULL,
     "planDate" DATETIME NOT NULL,
     "planDescription" TEXT NOT NULL,
+    "memoryId" TEXT,
     "completed" BOOLEAN NOT NULL DEFAULT false,
     CONSTRAINT "Plan_cellId_fkey" FOREIGN KEY ("cellId") REFERENCES "BingoCell" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "Plan_cardId_fkey" FOREIGN KEY ("cardId") REFERENCES "BingoCard" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT "Plan_cardId_fkey" FOREIGN KEY ("cardId") REFERENCES "BingoCard" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "Plan_memoryId_fkey" FOREIGN KEY ("memoryId") REFERENCES "Memory" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "Memory" (
     "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "date" DATETIME NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
-    "planId" TEXT NOT NULL,
     "memoryDate" DATETIME NOT NULL,
     "bondId" TEXT NOT NULL,
-    CONSTRAINT "Memory_planId_fkey" FOREIGN KEY ("planId") REFERENCES "Plan" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "Memory_bondId_fkey" FOREIGN KEY ("bondId") REFERENCES "Bond" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -92,7 +95,6 @@ CREATE TABLE "Picture" (
     "updatedAt" DATETIME NOT NULL,
     "memoryId" TEXT NOT NULL,
     "url" TEXT NOT NULL,
-    "caption" TEXT NOT NULL,
     CONSTRAINT "Picture_memoryId_fkey" FOREIGN KEY ("memoryId") REFERENCES "Memory" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -127,10 +129,7 @@ CREATE UNIQUE INDEX "BingoCell_cardId_position_key" ON "BingoCell"("cardId", "po
 CREATE UNIQUE INDEX "Plan_cellId_key" ON "Plan"("cellId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Plan_memoryId_key" ON "Plan"("memoryId");
+
+-- CreateIndex
 CREATE INDEX "Plan_cellId_idx" ON "Plan"("cellId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Memory_planId_key" ON "Memory"("planId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Picture_memoryId_key" ON "Picture"("memoryId");

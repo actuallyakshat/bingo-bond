@@ -58,16 +58,19 @@ export default async function MemoriesPage({
           <hr className="mt-4" />
         </div>
 
-        <div className="mt-8 flex flex-col gap-4">
-          {bond.memories.map((memory) => (
-            <MemoryCard memory={memory} key={memory.id} />
-          ))}
-        </div>
+        {bond.memories.length > 0 && (
+          <div className="mt-8 flex flex-col gap-4">
+            {bond.memories.map((memory) => (
+              <MemoryCard memory={memory} key={memory.id} />
+            ))}
+          </div>
+        )}
 
         {bond.memories.length == 0 && (
           <div className="mt-5">
+            <h2 className="font-bold text-xl">No Memories Yet</h2>
             <p className="text-sm text-muted-foreground">
-              Create your first memories to get started
+              Create your first memory to get started
             </p>
           </div>
         )}

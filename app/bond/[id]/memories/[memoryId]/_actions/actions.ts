@@ -25,7 +25,6 @@ export async function saveImageToDB({
       data: {
         memoryId: memoryId,
         url: url,
-        caption: "",
       },
     });
 

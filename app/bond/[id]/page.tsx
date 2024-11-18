@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button";
 import prisma from "@/db";
+import { auth } from "@clerk/nextjs/server";
 import { CalendarCheck2, ChevronLeft, User } from "lucide-react";
 import Link from "next/link";
 import AddFriendDialog from "./_components/AddFriendDialog";
-import Grid from "./_components/Grid";
-import DeletePlanDialog from "./_components/DeletePlanDialog";
-import { auth } from "@clerk/nextjs/server";
-import { revalidatePath } from "next/cache";
 import BondNotFound from "./_components/BondNotFound";
+import DeletePlanDialog from "./_components/DeletePlanDialog";
+import Grid from "./_components/Grid";
 
 interface BondPageProps {
   params: {
@@ -25,7 +24,15 @@ export default async function BondPage({ params }: BondPageProps) {
       members: true,
       bingoCard: {
         include: {
-          cells: true,
+          cells: {
+            include: {
+              plan: {
+                select: {
+                  completed: true,
+                },
+              },
+            },
+          },
         },
       },
     },
