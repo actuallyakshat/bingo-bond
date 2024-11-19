@@ -47,6 +47,7 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
     setError(null);
 
     try {
+      if (!clerkId) throw new Error("Missing clerkId");
       const response = await getUserDetails({ clerkId, email, name });
       if (!response.success) throw new Error(response.error);
       setClientUser(response.user || null);

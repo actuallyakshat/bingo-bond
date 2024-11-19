@@ -14,6 +14,9 @@ export async function getUserDetails({
   name,
 }: createUserProps) {
   try {
+    if (!clerkId || !email || !name)
+      return { success: false, error: "Missing required fields" };
+
     const existingUser = await prisma.user.findUnique({
       where: {
         id: clerkId,
@@ -39,6 +42,8 @@ export async function getUserDetails({
 
 export async function DeleteUser({ clerkId }: { clerkId: string }) {
   try {
+    if (!clerkId) return { success: false, data: "Missing clerkId" };
+
     const userExists = await prisma.user.findUnique({
       where: {
         id: clerkId,
