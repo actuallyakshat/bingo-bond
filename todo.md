@@ -4,5 +4,7 @@
 - [x] Implement plans section
 - [x] Add email reminders
 - [x] Add image uploads with cloud storage
+- [x] Deploy to Vercel
 - [ ] Add mobile responsiveness
-- [ ] Deploy to Vercel
+- [ ] Allow adding plans from memories
+- [ ] Fix: View full image bug

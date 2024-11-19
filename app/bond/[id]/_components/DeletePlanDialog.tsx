@@ -37,10 +37,14 @@ export default function DeletePlanDialog({ bondId }: { bondId: string }) {
 
   return (
     <Dialog>
-      <DialogTrigger>
-        <Button variant={"link"}>
+      <DialogTrigger onClick={(e) => e.stopPropagation()}>
+        <Button variant={"link"} className="md:flex hidden">
           <Trash className="size-5" /> Delete
         </Button>
+        <button className="w-full flex items-center">
+          <Trash className="mr-4 h-4 w-4 md:hidden" />
+          Delete
+        </button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

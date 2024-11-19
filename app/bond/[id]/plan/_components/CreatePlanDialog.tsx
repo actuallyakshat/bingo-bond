@@ -24,7 +24,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { DatePicker } from "@/components/ui/date-picker";
 import EmojiPicker, { SkinTones } from "emoji-picker-react";
 
-// Interfaces for unplanned activities and props
 interface UnplannedActivity {
   id: string;
   activity: string;
@@ -98,21 +97,26 @@ export default function CreatePlanDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"link"} className="pl-0">
+        <Button variant={"link"} className="pl-0 text-sm sm:text-base">
           Create Plan
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[80vh] overflow-y-scroll noscrollbar">
+      <DialogContent className="max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 w-[95vw] max-w-md sm:max-w-lg md:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Hooray! Let&apos;s Make a plan</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl sm:text-2xl">
+            Hooray! Let&apos;s Make a plan
+          </DialogTitle>
+          <DialogDescription className="text-sm sm:text-base">
             Tell us about your plan before we create it for you.
           </DialogDescription>
         </DialogHeader>
 
-        <form className="flex flex-col gap-3" onSubmit={(e) => handleSubmit(e)}>
-          <div className="space-y-1.5">
-            <Label>Plan</Label>
+        <form
+          className="flex flex-col gap-4 sm:gap-5"
+          onSubmit={(e) => handleSubmit(e)}
+        >
+          <div className="space-y-2">
+            <Label className="text-sm sm:text-base">Plan</Label>
             <Select
               onValueChange={(value) => setSelectedPlan(value)}
               disabled={unplannedActivities.length === 0}
@@ -136,9 +140,9 @@ export default function CreatePlanDialog({
             </Select>
           </div>
 
-          <div className="space-y-1.5">
-            <Label>Emoji</Label>
-            <div className="font-medium my-2 text-lg text-muted-foreground">
+          <div className="space-y-2">
+            <Label className="text-sm sm:text-base">Emoji</Label>
+            <div className="font-medium my-2 text-base sm:text-lg text-muted-foreground">
               Selected Emoji: {emoji}
             </div>
             <EmojiPicker
@@ -147,22 +151,23 @@ export default function CreatePlanDialog({
               onEmojiClick={(e) => setEmoji(e.emoji)}
               lazyLoadEmojis={true}
               searchPlaceHolder="Find an emoji that fits your plan"
-              height={400}
+              height={300}
+              width="100%"
             />
           </div>
 
-          <div className="space-y-1.5">
-            <Label>Description</Label>
+          <div className="space-y-2">
+            <Label className="text-sm sm:text-base">Description</Label>
             <Textarea
               disabled={!selectedPlan}
               placeholder="We are going to visit The Big Chill Cafe at Khan Market"
               onChange={(e) => setDescription(e.target.value)}
-              className="max-h-[300px]"
+              className="max-h-[200px] sm:max-h-[300px] text-sm sm:text-base"
             />
           </div>
 
-          <div className="space-y-1.5">
-            <Label>Date</Label>
+          <div className="space-y-2">
+            <Label className="text-sm sm:text-base">Date</Label>
             <DatePicker
               date={date}
               setDate={setDate}
@@ -170,7 +175,11 @@ export default function CreatePlanDialog({
             />
           </div>
 
-          <Button className="w-full" type={"submit"} disabled={loading}>
+          <Button
+            className="w-full text-sm sm:text-base"
+            type={"submit"}
+            disabled={loading}
+          >
             {loading ? "Creating..." : "Create"}
           </Button>
         </form>

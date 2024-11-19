@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,10 +8,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Plus } from "lucide-react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 import { addMember } from "../_actions/actions";
 
@@ -51,11 +51,17 @@ export default function AddFriendDialog({ bondId }: { bondId: string }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant={"link"}>
-          <Plus className="size-5" />
-          Add Friends
-        </Button>
+      <DialogTrigger onClick={(e) => e.stopPropagation()}>
+        <>
+          <Button variant={"link"} className="hidden md:flex">
+            <Plus className="size-5" />
+            Add Friends
+          </Button>
+          <button className="w-full items-center flex md:hidden">
+            <Plus className="size-4 mr-4" />
+            Add Member
+          </button>
+        </>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

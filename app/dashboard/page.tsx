@@ -25,7 +25,7 @@ export default async function Dashboard() {
   });
 
   return (
-    <main className="flex-1 overflow-auto">
+    <main className="flex-1 w-full overflow-auto">
       <Header headerTitle="Your Bonds" />
       <div className="px-10">
         <h2 className="text-2xl font-bold">Your Bonds</h2>

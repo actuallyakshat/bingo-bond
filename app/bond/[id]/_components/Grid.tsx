@@ -162,7 +162,7 @@ export default function Grid({ data }: { data: Bond }) {
             onClick={() => setSelectedCell(i)}
           >
             {cellData ? (
-              <p className="font-bold text-base text-wrap">
+              <p className="font-bold text-sm md:text-base text-wrap">
                 {cellData.activity}
               </p>
             ) : (
@@ -215,7 +215,7 @@ export default function Grid({ data }: { data: Bond }) {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="grid grid-cols-4 gap-2">{gridItems}</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">{gridItems}</div>
     </div>
   );
 }

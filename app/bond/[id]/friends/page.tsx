@@ -28,9 +28,9 @@ export default async function Friends({ params }: { params: { id: string } }) {
         </div>
       </header>
 
-      <div className="max-w-screen-md mx-auto py-5">
+      <div className="max-w-screen-md mx-auto p-5">
         <div className="space-y-1.5">
-          <h1 className="text-center font-extrabold text-4xl">
+          <h1 className="text-center font-extrabold text-2xl md:text-4xl">
             Members of <span className="text-primary">{bond.name}</span>
           </h1>
           <p className="text-center text-muted-foreground text-sm font-medium">

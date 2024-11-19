@@ -45,9 +45,9 @@ export default async function PlanPage({ params }: { params: { id: string } }) {
         </Link>
       </header>
 
-      <div className="max-w-screen-md mx-auto pt-5">
+      <div className="max-w-screen-md mx-auto p-5">
         <div className="space-y-1.5">
-          <h1 className="text-center font-extrabold text-4xl">
+          <h1 className="text-center font-extrabold text-2xl md:text-4xl">
             Plans for <span className="text-primary">{bond.name}</span>
           </h1>
           <p className="text-center text-muted-foreground text-sm font-medium">

@@ -7,7 +7,7 @@ import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
-  title: "BingoBond",
+  title: "Bingo Bond",
   description:
     "An application that allows you to create bingo card of plans with your friends.",
 };

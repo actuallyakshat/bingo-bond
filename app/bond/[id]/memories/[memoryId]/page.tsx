@@ -38,12 +38,12 @@ export default async function MemoryPage({ params }: MemoryPageProps) {
       <header className="pt-4 px-3 w-full flex items-center justify-between">
         <NavigateBackButton />
       </header>
-      <div className="max-w-screen-md mx-auto py-5">
+      <div className="max-w-screen-md mx-auto p-5">
         <div className="space-y-3">
-          <h1 className="text-center font-extrabold text-4xl">
+          <h1 className="text-center font-extrabold text-2xl md:text-4xl">
             Memories for <span className="text-primary">{memory.name}</span>
           </h1>
-          <div className="font-medium flex items-center justify-center gap-2">
+          <div className="font-medium flex text-sm md:text-base items-center justify-center gap-2">
             <Calendar className="size-5" />
             {memory.date.toLocaleDateString()}
           </div>

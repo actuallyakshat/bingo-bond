@@ -118,9 +118,9 @@ export default async function MemoriesPage({
         </Link>
       </header>
 
-      <div className="max-w-screen-md mx-auto py-5 px-4">
+      <div className="max-w-screen-md mx-auto p-5">
         <div className="mb-8">
-          <h1 className="text-center font-extrabold text-4xl">
+          <h1 className="text-center font-extrabold text-2xl md:text-4xl">
             Memories for <span className="text-primary">{bond.name}</span>
           </h1>
           <hr className="mt-4" />

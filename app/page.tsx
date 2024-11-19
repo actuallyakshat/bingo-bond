@@ -4,11 +4,11 @@ import Link from "next/link";
 export default function Home() {
   return (
     <section className="bg-[#f5f5f5]">
-      <div className="mx-auto max-w-screen-xl px-4 py-32 lg:flex lg:h-screen lg:items-center">
+      <div className="mx-auto max-w-screen-xl px-4 py-32 flex min-h-screen h-full items-center">
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="text-3xl font-extrabold sm:text-5xl tracking-tight">
             Save Plans in a Bingo Card
-            <strong className="font-extrabold mt-1 text-primary sm:block">
+            <strong className="block font-extrabold mt-1 text-primary sm:block">
               Make Memories with Friends
             </strong>
           </h1>

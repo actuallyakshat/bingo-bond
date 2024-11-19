@@ -9,7 +9,7 @@ export default function RootLayout({
 }>) {
   return (
     <SidebarProvider>
-      <div className="grid h-full min-h-screen w-screen grid-cols-[auto_1fr]">
+      <div className="grid h-full min-h-screen w-screen md:grid-cols-[auto_1fr]">
         <SidebarComponent />
         <SidebarInset className="flex flex-col">{children}</SidebarInset>
       </div>
