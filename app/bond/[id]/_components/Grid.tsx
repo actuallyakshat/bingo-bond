@@ -12,24 +12,39 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { convertToTitleCase } from "@/lib/utils";
-import { BingoCell, Bond, Plan } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createActivity, deleteActivity } from "../_actions/actions";
 
-interface BingoCellWithPlan extends BingoCell {
+interface Plan {
+  completed: boolean;
+}
+
+interface BingoCell {
+  id: string;
+  cardId: string;
+  position: number;
+  activity: string;
   plan: Plan | null;
 }
 
-interface BingoCardWithCells extends BingoCellWithPlan {
-  cells: BingoCellWithPlan[];
+interface BingoCard {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  bondId: string;
+  cells: BingoCell[];
 }
 
-interface DataProp extends Bond {
-  bingoCard: BingoCardWithCells | null;
+interface Bond {
+  id: string;
+  name: string;
+  description: string | null;
+  createdById: string;
+  bingoCard: BingoCard | null;
 }
 
-export default function Grid({ data }: { data: DataProp }) {
+export default function Grid({ data }: { data: Bond }) {
   const [selectedCell, setSelectedCell] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -184,7 +199,7 @@ export default function Grid({ data }: { data: DataProp }) {
             </Button>
             {cellData ? (
               <Button
-                variant={"outline"}
+                variant="outline"
                 type="button"
                 disabled={loading}
                 onClick={() => handleDeleteActivity(Number(selectedCell))}

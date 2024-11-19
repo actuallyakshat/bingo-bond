@@ -2,7 +2,7 @@
 - [x] Improve friend request UI
 - [x] Implement gallery section
 - [x] Implement plans section
-- [ ] Add email reminders
+- [x] Add email reminders
 - [x] Add image uploads with cloud storage
 - [ ] Add mobile responsiveness
 - [ ] Deploy to Vercel

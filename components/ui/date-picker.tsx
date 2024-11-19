@@ -18,8 +18,8 @@ export function DatePicker({
   setDate,
   disabled,
 }: {
-  date: Date;
-  setDate: any;
+  date: Date | undefined;
+  setDate: (date: Date | undefined) => void;
   disabled: boolean;
 }) {
   return (

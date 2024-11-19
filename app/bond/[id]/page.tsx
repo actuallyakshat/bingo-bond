@@ -21,7 +21,6 @@ export default async function BondPage({ params }: BondPageProps) {
       id: params.id,
     },
     include: {
-      members: true,
       bingoCard: {
         include: {
           cells: {

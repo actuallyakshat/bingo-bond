@@ -60,7 +60,7 @@ export default function CreatePlanDialog({
   const [open, setOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [emoji, setEmoji] = useState<string>();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
