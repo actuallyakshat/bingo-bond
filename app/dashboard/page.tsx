@@ -65,17 +65,17 @@ function BondCard({ bond }: { bond: Bond }) {
   return (
     <Link
       href={`/bond/${bond.id}`}
-      className="group relative overflow-hidden rounded-xl bg-gradient-to-b from-neutral-600 to-neutral-950 shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+      className="group relative overflow-hidden rounded-xl bg-gradient-to-b from-neutral-50 to-zinc-100 shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:bg-white"
     >
       <div className="absolute inset-0 opacity-20 transition-opacity duration-300 group-hover:opacity-30" />
       <div className="relative p-6 flex flex-col h-full">
-        <h3 className="text-xl font-bold text-white mb-1">{bond.name}</h3>
+        <h3 className="text-xl font-bold mb-1">{bond.name}</h3>
         {bond.description && (
           <p className="text-sm text-muted-foreground dark mb-4 line-clamp-2">
             {bond.description}
           </p>
         )}
-        <div className="mt-auto flex items-center text-sm dark text-foreground space-x-4">
+        <div className="mt-auto flex items-center text-sm text-foreground space-x-4">
           {bond.members.length > 0 && (
             <div className="flex items-center">
               <Users className="w-4 h-4 mr-1" />

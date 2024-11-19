@@ -1,9 +1,15 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BingoCell, Plan } from "@prisma/client";
-import { Calendar } from "lucide-react";
-
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -12,9 +18,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { createMemory, deletePlan } from "../_actions/actions";
+import { BingoCell, Plan } from "@prisma/client";
+import { Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { createMemory, deletePlan } from "../_actions/actions";
 
 interface CellWithPlan extends BingoCell {
   plan: Plan | null;
@@ -79,29 +87,45 @@ export default function PlanCard({
 
   if (!cell.plan) return null;
 
+  const isToday =
+    new Date().toDateString() === new Date(cell.plan.planDate).toDateString();
+  const isPastDate = new Date(cell.plan.planDate) < new Date();
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant={"outline"}
-          className="p-3 rounded-xl block border hover:border-primary/30 hover:shadow-primary/15 hover:bg-white h-full text-left shadow-md hover:-translate-y-0.5 hover:shadow-lg transition-all duration-350"
-        >
-          <h2 className="font-light text-xl font-serif">{cell.activity}</h2>
-          <p className="text-sm text-muted-foreground">
-            {cell.plan.planDescription}
-          </p>
-          <p className="flex items-center gap-2 mt-4 text-sm">
-            <Calendar className="size-4" />
-            {cell.plan.planDate.toLocaleDateString()}
-          </p>
-        </Button>
+        <Card className="w-full h-full hover:shadow-lg transition-all duration-300 cursor-pointer group">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl font-semibold flex items-center gap-3">
+              <span className="text-xl">{cell.plan.emoji}</span>
+              <span>{cell.activity}</span>
+            </CardTitle>
+            <CardDescription className="line-clamp-2">
+              {cell.plan.planDescription}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pb-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Calendar className="size-4" />
+              {new Date(cell.plan.planDate).toLocaleDateString()}
+            </div>
+          </CardContent>
+          <CardFooter className="pt-2">
+            <Badge
+              variant={isPastDate && !isToday ? "secondary" : "default"}
+              className="ml-auto group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300"
+            >
+              {isPastDate ? (isToday ? "Today" : "Past") : "Upcoming"}
+            </Badge>
+          </CardFooter>
+        </Card>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{cell.activity}</DialogTitle>
           <DialogDescription>
             If you have completed this plan, you can add this to your memories
-            inorder to preserve some valuable memories!
+            in order to preserve some valuable memories!
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-2 items-center justify-center">
@@ -111,7 +135,7 @@ export default function PlanCard({
 
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="w-full" variant={"outline"}>
+              <Button className="w-full" variant="outline">
                 Delete
               </Button>
             </DialogTrigger>
@@ -120,11 +144,11 @@ export default function PlanCard({
                 <DialogTitle>Are you absolutely sure?</DialogTitle>
                 <DialogDescription>
                   You are about to delete this plan. This action cannot be
-                  undone
+                  undone.
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={(e) => handleSubmit(e)}>
-                <Button variant={"outline"} className="w-full">
+                <Button variant="outline" className="w-full">
                   Delete
                 </Button>
               </form>

@@ -1,9 +1,5 @@
-import { Button } from "@/components/ui/button";
 import prisma from "@/db";
-import { ChevronLeft } from "lucide-react";
-import React from "react";
 import AddFriendDialog from "../_components/AddFriendDialog";
-import Link from "next/link";
 import BackToBond from "../_components/BackToBond";
 
 export default async function Friends({ params }: { params: { id: string } }) {

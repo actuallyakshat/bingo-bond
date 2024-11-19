@@ -63,7 +63,7 @@ export default async function PlanPage({ params }: { params: { id: string } }) {
 
         <hr className="pt-2" />
 
-        <div className="grid lg:grid-cols-3 grid-cols-1 mt-3 gap-4">
+        <div className="grid lg:grid-cols-2 grid-cols-1 mt-3 gap-4">
           {plannedCells.map((cell) => {
             return <PlanCard key={cell.id} cell={cell} bondId={bond.id} />;
           })}

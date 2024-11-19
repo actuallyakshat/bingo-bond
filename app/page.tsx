@@ -1,35 +1,48 @@
+import { SignedIn, SignedOut } from "@clerk/nextjs";
+import Link from "next/link";
+
 export default function Home() {
   return (
-    <section className="bg-gray-50">
+    <section className="bg-[#f5f5f5]">
       <div className="mx-auto max-w-screen-xl px-4 py-32 lg:flex lg:h-screen lg:items-center">
-        <div className="mx-auto max-w-xl text-center">
-          <h1 className="text-3xl font-extrabold sm:text-4xl">
-            Understand User Flow.
-            <strong className="font-extrabold text-red-700 sm:block">
-              {" "}
-              Increase Conversion.{" "}
+        <div className="mx-auto max-w-2xl text-center">
+          <h1 className="text-3xl font-extrabold sm:text-5xl tracking-tight">
+            Save Plans in a Bingo Card
+            <strong className="font-extrabold mt-1 text-primary sm:block">
+              Make Memories with Friends
             </strong>
           </h1>
 
-          <p className="mt-4 sm:text-xl/relaxed">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt
-            illo tenetur fuga ducimus numquam ea!
+          <p className="mt-4 font-medium text-muted-foreground sm:text-lg/relaxed">
+            Bingo Bond allows you to create bingo cards of plans with your
+            friends so that you can enjoy time with your loved ones, one
+            activity at a time.
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <a
-              className="block w-full rounded bg-red-600 px-12 py-3 text-sm font-medium text-white shadow hover:bg-red-700 focus:outline-none focus:ring active:bg-red-500 sm:w-auto"
-              href="#"
-            >
-              Get Started
-            </a>
+            <SignedIn>
+              <Link
+                className="block w-full rounded bg-primary px-12 py-3 text-sm font-medium text-white shadow hover:bg-rose-700 focus:outline-none focus:ring active:bg-rose-700 sm:w-auto"
+                href="/dashboard"
+              >
+                Dashboard
+              </Link>
+            </SignedIn>
+            <SignedOut>
+              <Link
+                className="block w-full rounded bg-primary px-12 py-3 text-sm font-medium text-white shadow hover:bg-rose-700 focus:outline-none focus:ring active:bg-rose-700 sm:w-auto"
+                href="/login"
+              >
+                Get Started
+              </Link>
+            </SignedOut>
 
-            <a
-              className="block w-full rounded px-12 py-3 text-sm font-medium text-red-600 shadow hover:text-red-700 focus:outline-none focus:ring active:text-red-500 sm:w-auto"
-              href="#"
+            <Link
+              className="block w-full rounded px-12 py-3 text-sm font-medium shadow text-primary hover:text-rose-700 focus:outline-none focus:ring sm:w-auto"
+              href="www.github.com/actuallyakshat/bingo-bond"
             >
-              Learn More
-            </a>
+              Github
+            </Link>
           </div>
         </div>
       </div>

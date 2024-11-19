@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { DatePicker } from "@/components/ui/date-picker";
+import EmojiPicker, { SkinTones } from "emoji-picker-react";
 
 // Interfaces for unplanned activities and props
 interface UnplannedActivity {
@@ -52,7 +53,6 @@ interface CreatePlanDialogProps {
 }
 
 export default function CreatePlanDialog({
-  bond,
   cardId,
   unplannedActivities,
 }: CreatePlanDialogProps) {
@@ -61,11 +61,12 @@ export default function CreatePlanDialog({
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [date, setDate] = useState<Date>(new Date());
+  const [emoji, setEmoji] = useState<string>();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      if (!selectedPlan || !description || !date) {
+      if (!selectedPlan || !description || !date || !emoji) {
         toast.error("Please fill all the fields");
         return;
       }
@@ -77,6 +78,7 @@ export default function CreatePlanDialog({
         cardId: cardId,
         planDate: date,
         planDescription: description,
+        emoji,
       });
 
       setLoading(false);
@@ -100,7 +102,7 @@ export default function CreatePlanDialog({
           Create Plan
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[80vh] overflow-y-scroll noscrollbar">
         <DialogHeader>
           <DialogTitle>Hooray! Let&apos;s Make a plan</DialogTitle>
           <DialogDescription>
@@ -132,6 +134,21 @@ export default function CreatePlanDialog({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Emoji</Label>
+            <div className="font-medium my-2 text-lg text-muted-foreground">
+              Selected Emoji: {emoji}
+            </div>
+            <EmojiPicker
+              open={unplannedActivities.length > 0}
+              defaultSkinTone={SkinTones.LIGHT}
+              onEmojiClick={(e) => setEmoji(e.emoji)}
+              lazyLoadEmojis={true}
+              searchPlaceHolder="Find an emoji that fits your plan"
+              height={400}
+            />
           </div>
 
           <div className="space-y-1.5">

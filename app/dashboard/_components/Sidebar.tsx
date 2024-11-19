@@ -56,7 +56,9 @@ export default function SidebarComponent() {
   return (
     <Sidebar>
       <SidebarHeader className="border-b border-border p-4">
-        <h2 className="text-lg font-semibold">Bingo Bond</h2>
+        <h2 className="text-xl font-extrabold text-center">
+          Bingo <span className="text-primary">Bond</span>
+        </h2>
       </SidebarHeader>
 
       <SidebarContent>
@@ -76,7 +78,7 @@ export default function SidebarComponent() {
 
       <SidebarFooter className="border-t border-border">
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem className="hover:text-destructive/80">
             <SidebarMenuButton asChild>
               <button
                 className="flex w-full items-center gap-2 text-destructive hover:text-destructive/80"

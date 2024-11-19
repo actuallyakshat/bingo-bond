@@ -20,16 +20,11 @@ export default async function Invites() {
 
       <div className="px-10 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {invites.map((invite) => (
-          <div
+          <HandleInvite
+            inviteId={invite.id}
+            bondName={invite.bond.name}
             key={invite.id}
-            className="border rounded-2xl shadow-sm px-6 pt-4"
-          >
-            <h2 className="text-xl font-bold">{invite.bond.name}</h2>
-            <p className="text-sm text-muted-foreground">
-              {invite.bond.description}
-            </p>
-            <HandleInvite inviteId={invite.id} />
-          </div>
+          />
         ))}
 
         {invites.length == 0 && (

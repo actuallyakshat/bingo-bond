@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   id               String   @id @default(uuid())
-  email            String   @unique ///@encrypted
+  email            String   @unique
   name             String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -87,6 +87,7 @@ model Plan {
   id              String    @id @default(uuid())
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+  emoji           String    @default("🎉")
   cellId          String    @unique
   cell            BingoCell @relation(fields: [cellId], references: [id], onDelete: Cascade)
   cardId          String
@@ -96,6 +97,7 @@ model Plan {
   memory          Memory?   @relation(fields: [memoryId], references: [id])
   memoryId        String?   @unique
   completed       Boolean   @default(false)
+  remindersSent   Boolean   @default(false)
 
   @@index([cellId])
 }

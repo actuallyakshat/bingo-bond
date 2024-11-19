@@ -8,11 +8,13 @@ export async function createPlan({
   cardId,
   planDate,
   planDescription,
+  emoji,
 }: {
   cellId: string;
   cardId: string;
   planDate: Date;
   planDescription: string;
+  emoji: string;
 }) {
   try {
     if (!cellId || !cardId || !planDate || !planDescription) {
@@ -44,6 +46,7 @@ export async function createPlan({
         cardId: cardId,
         planDate: planDate,
         planDescription: planDescription,
+        emoji,
       },
     });
 

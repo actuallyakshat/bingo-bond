@@ -9,17 +9,6 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "Invite" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "userId" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    "bondId" TEXT NOT NULL,
-    CONSTRAINT "Invite_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "Invite_bondId_fkey" FOREIGN KEY ("bondId") REFERENCES "Bond" ("id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-
--- CreateTable
 CREATE TABLE "Bond" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
@@ -28,6 +17,17 @@ CREATE TABLE "Bond" (
     "updatedAt" DATETIME NOT NULL,
     "createdById" TEXT NOT NULL,
     CONSTRAINT "Bond_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Invite" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "userId" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    "bondId" TEXT NOT NULL,
+    CONSTRAINT "Invite_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "Invite_bondId_fkey" FOREIGN KEY ("bondId") REFERENCES "Bond" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -64,6 +64,7 @@ CREATE TABLE "Plan" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
+    "emoji" TEXT NOT NULL DEFAULT '🎉',
     "cellId" TEXT NOT NULL,
     "cardId" TEXT NOT NULL,
     "planDate" DATETIME NOT NULL,
