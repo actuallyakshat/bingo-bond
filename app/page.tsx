@@ -31,7 +31,7 @@ export default function Home() {
             <SignedOut>
               <Link
                 className="block w-full rounded bg-primary px-12 py-3 text-sm font-medium text-white shadow hover:bg-rose-700 focus:outline-none focus:ring active:bg-rose-700 sm:w-auto"
-                href="/login"
+                href="/sign-in"
               >
                 Get Started
               </Link>
