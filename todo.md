@@ -6,5 +6,5 @@
 - [x] Add image uploads with cloud storage
 - [x] Deploy to Vercel
 - [x] Add mobile responsiveness
-- [ ] Allow adding plans from memories
+- [x] Allow adding plans from memories
 - [ ] Fix: View full image bug

@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { convertToTitleCase } from "@/lib/utils";
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createActivity, deleteActivity } from "../_actions/actions";
 
