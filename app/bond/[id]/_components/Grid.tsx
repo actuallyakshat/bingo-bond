@@ -9,10 +9,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { convertToTitleCase } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createActivity, deleteActivity } from "../_actions/actions";
 
@@ -44,13 +51,26 @@ interface Bond {
   bingoCard: BingoCard | null;
 }
 
-export default function Grid({ data }: { data: Bond }) {
+interface MemoriesProp {
+  id: string;
+  name: string;
+}
+
+export default function Grid({
+  data,
+  memories,
+}: {
+  data: Bond;
+  memories: MemoriesProp[];
+}) {
   const [selectedCell, setSelectedCell] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [openDialogs, setOpenDialogs] = useState<{ [key: number]: boolean }>(
     {}
   );
+  const [isMemoryDialogOpen, setIsMemoryDialogOpen] = useState(false);
+  const [selectedMemory, setSelectedMemory] = useState<string | null>(null);
 
   useEffect(() => {
     if (selectedCell !== null) {
@@ -73,6 +93,8 @@ export default function Grid({ data }: { data: Bond }) {
     if (!isOpen) {
       setSelectedCell(null);
       setName("");
+      setIsMemoryDialogOpen(false);
+      setSelectedMemory(null);
     }
   };
 
@@ -114,6 +136,31 @@ export default function Grid({ data }: { data: Bond }) {
     }
   }
 
+  async function handleAddMemory() {
+    if (!selectedMemory || selectedCell === null) return;
+
+    try {
+      setLoading(true);
+      const response = await createActivity({
+        cardId: data.bingoCard!.id,
+        position: selectedCell,
+        name: selectedMemory,
+      });
+
+      if (response.success && response.data) {
+        toast.success("Memory added to the grid!");
+        handleOpenChange(selectedCell, false);
+        setIsMemoryDialogOpen(false);
+        setSelectedMemory(null);
+      }
+    } catch (error) {
+      toast.error("Failed to add memory to the grid");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleDeleteActivity(position: number) {
     try {
       setLoading(true);
@@ -141,9 +188,16 @@ export default function Grid({ data }: { data: Bond }) {
     }
   }
 
+  const memoriesNotInGrid = memories.filter(
+    (memory) =>
+      !data.bingoCard?.cells.some((cell) => cell.activity === memory.name)
+  );
+
   const gridItems = Array.from({ length: 16 }, (_, i) => {
     const cellData = data.bingoCard?.cells.find((cell) => cell.position === i);
-    const isCompleted = cellData?.plan?.completed;
+    const isCompleted =
+      cellData?.plan?.completed ||
+      memories.some((memory) => memory.name === cellData?.activity);
 
     return (
       <Dialog
@@ -178,36 +232,82 @@ export default function Grid({ data }: { data: Bond }) {
             </DialogDescription>
           </DialogHeader>
 
-          <form
-            className="flex flex-col gap-3"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
-            <div className="space-y-1.5">
-              <Label>Plan</Label>
-              <Input
-                placeholder="Trip to Manali"
-                maxLength={24}
-                value={name}
-                onChange={(e) => setName(e.currentTarget.value)}
-              />
+          {isMemoryDialogOpen ? (
+            <div className="space-y-4">
+              <Select onValueChange={setSelectedMemory}>
+                <SelectTrigger disabled={!memoriesNotInGrid.length}>
+                  <SelectValue
+                    placeholder={
+                      !memoriesNotInGrid.length
+                        ? "No memories to select"
+                        : "Select a memory"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {memoriesNotInGrid?.map((memory) => (
+                    <SelectItem key={memory.id} value={memory.name}>
+                      {memory.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="flex justify-between">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsMemoryDialogOpen(false)}
+                >
+                  Back
+                </Button>
+                <Button
+                  onClick={handleAddMemory}
+                  disabled={!selectedMemory || loading}
+                >
+                  {loading ? "Adding..." : "Add to Grid"}
+                </Button>
+              </div>
             </div>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : "Save"}
-            </Button>
-            {cellData ? (
-              <Button
-                variant="outline"
-                type="button"
-                disabled={loading}
-                onClick={() => handleDeleteActivity(Number(selectedCell))}
-              >
-                Delete
+          ) : (
+            <form
+              className="flex flex-col gap-3"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+              }}
+            >
+              <div className="space-y-1.5">
+                <Label>Plan</Label>
+                <Input
+                  placeholder="Trip to Manali"
+                  maxLength={24}
+                  value={name}
+                  onChange={(e) => setName(e.currentTarget.value)}
+                />
+              </div>
+              <Button type="submit" disabled={loading}>
+                {loading ? "Saving..." : "Save"}
               </Button>
-            ) : null}
-          </form>
+              {!cellData && (
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={() => setIsMemoryDialogOpen(true)}
+                >
+                  Add From Memories
+                </Button>
+              )}
+              {cellData && (
+                <Button
+                  variant="outline"
+                  type="button"
+                  disabled={loading}
+                  onClick={() => handleDeleteActivity(Number(selectedCell))}
+                >
+                  Delete
+                </Button>
+              )}
+            </form>
+          )}
         </DialogContent>
       </Dialog>
     );

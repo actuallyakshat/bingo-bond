@@ -37,7 +37,6 @@ export default function DeleteMemoryButton({
       setLoading(false);
 
       if (response.success) {
-        console.log("Memory deleted successfully");
         router.replace("/bond/" + bondId + "/memories");
       }
     } catch (error) {

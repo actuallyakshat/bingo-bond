@@ -97,7 +97,7 @@ export default function CreatePlanDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"link"} className="pl-0 text-sm sm:text-base">
+        <Button variant={"link"} className="pl-0 text-sm">
           Create Plan
         </Button>
       </DialogTrigger>

@@ -43,6 +43,16 @@ export default async function BondPage({ params }: BondPageProps) {
     },
   });
 
+  const memories = await prisma.memory.findMany({
+    where: {
+      bondId: params.id,
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
   if (!bond) {
     return <BondNotFound />;
   }
@@ -88,7 +98,10 @@ export default async function BondPage({ params }: BondPageProps) {
                   <Menu className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-[150px]">
+              <DropdownMenuContent
+                align="end"
+                className="min-w-[150px] text-primary"
+              >
                 <DropdownMenuItem asChild>
                   <Link
                     href={"/bond/" + bond.id + "/plan"}
@@ -132,7 +145,7 @@ export default async function BondPage({ params }: BondPageProps) {
             {bond.description}
           </p>
         </div>
-        <Grid data={bond} />
+        <Grid data={bond} memories={memories} />
       </div>
     </>
   );

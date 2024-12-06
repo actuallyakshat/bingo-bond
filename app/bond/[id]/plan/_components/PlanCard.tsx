@@ -21,6 +21,7 @@ import {
 import { BingoCell, Plan } from "@prisma/client";
 import { Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 import { createMemory, deletePlan } from "../_actions/actions";
 
@@ -36,6 +37,8 @@ export default function PlanCard({
   bondId: string;
 }) {
   const router = useRouter();
+  const [isMainDialogOpen, setIsMainDialogOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -48,7 +51,8 @@ export default function PlanCard({
       });
       if (res.success) {
         toast.success("Plan deleted successfully");
-        console.log("Plan deleted successfully");
+        setIsMainDialogOpen(false);
+        setIsDeleteConfirmOpen(false);
         router.refresh();
       }
     } catch (error) {
@@ -76,7 +80,7 @@ export default function PlanCard({
         toast.success(
           "Memory added successfully. Visit memories to add pictures!"
         );
-        console.log("Memory added successfully");
+        setIsMainDialogOpen(false);
         router.refresh();
       }
     } catch (error) {
@@ -92,7 +96,7 @@ export default function PlanCard({
   const isPastDate = new Date(cell.plan.planDate) < new Date();
 
   return (
-    <Dialog>
+    <Dialog open={isMainDialogOpen} onOpenChange={setIsMainDialogOpen}>
       <DialogTrigger asChild>
         <Card className="w-full h-full hover:shadow-lg transition-all duration-300 cursor-pointer group">
           <CardHeader className="pb-2">
@@ -120,42 +124,54 @@ export default function PlanCard({
           </CardFooter>
         </Card>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{cell.activity}</DialogTitle>
-          <DialogDescription>
-            If you have completed this plan, you can add this to your memories
-            in order to preserve some valuable memories!
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col gap-2 items-center justify-center">
-          <form onSubmit={(e) => addToMemories(e)} className="w-full">
-            <Button className="w-full">Add To Memories</Button>
-          </form>
 
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="w-full" variant="outline">
+      {isDeleteConfirmOpen ? (
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you absolutely sure?</DialogTitle>
+            <DialogDescription>
+              You are about to delete this plan. This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex gap-4 justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsDeleteConfirmOpen(false)}
+                className="w-full"
+              >
+                Cancel
+              </Button>
+              <Button type="submit" className="w-full">
                 Delete
               </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Are you absolutely sure?</DialogTitle>
-                <DialogDescription>
-                  You are about to delete this plan. This action cannot be
-                  undone.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={(e) => handleSubmit(e)}>
-                <Button variant="outline" className="w-full">
-                  Delete
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </DialogContent>
+            </div>
+          </form>
+        </DialogContent>
+      ) : (
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{cell.activity}</DialogTitle>
+            <DialogDescription>
+              If you have completed this plan, you can add this to your memories
+              in order to preserve some valuable memories!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-2 items-center justify-center">
+            <form onSubmit={addToMemories} className="w-full">
+              <Button className="w-full">Add To Memories</Button>
+            </form>
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={() => setIsDeleteConfirmOpen(true)}
+            >
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      )}
     </Dialog>
   );
 }

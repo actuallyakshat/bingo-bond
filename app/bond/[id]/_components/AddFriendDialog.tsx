@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -40,28 +41,57 @@ export default function AddFriendDialog({ bondId }: { bondId: string }) {
       if (response.success) {
         toast.success("Invite sent successfully");
         setOpen(false);
+        setEmail(""); // Reset email input after successful submission
       } else {
         toast.error(response.error);
       }
     } catch (error) {
       console.error(error);
       toast.error("Failed to send the invite");
+    } finally {
+      setLoading(false);
     }
   }
 
+  const handleOpenChange = (newOpen: boolean) => {
+    if (newOpen) {
+      setOpen(true);
+    } else {
+      // Add a small delay before closing to prevent immediate closure on mobile
+      setTimeout(() => {
+        setOpen(false);
+        setEmail(""); // Reset email input when dialog is closed
+      }, 100);
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger onClick={(e) => e.stopPropagation()}>
-        <>
-          <Button variant={"link"} className="hidden md:flex">
-            <Plus className="size-5" />
-            Add Friends
-          </Button>
-          <button className="w-full items-center flex md:hidden">
-            <Plus className="size-4 mr-4" />
-            Add Member
-          </button>
-        </>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
+        <Button
+          variant="link"
+          className="hidden md:flex"
+          onClick={(e) => {
+            e.preventDefault();
+            setOpen(true);
+          }}
+        >
+          <Plus className="size-5 mr-2" />
+          Add Friends
+        </Button>
+      </DialogTrigger>
+      <DialogTrigger asChild>
+        <button
+          className="w-full text-sm text-primary items-center flex md:hidden"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setOpen(true);
+          }}
+        >
+          <Plus className="size-4 mr-4" />
+          Add Member
+        </button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -71,19 +101,20 @@ export default function AddFriendDialog({ bondId }: { bondId: string }) {
             bond
           </DialogDescription>
         </DialogHeader>
-
-        <form className="flex flex-col gap-3" onSubmit={(e) => handleSubmit(e)}>
+        <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
           <div className="space-y-1.5">
-            <Label>Email address</Label>
+            <Label htmlFor="email">Email address</Label>
             <Input
+              id="email"
               type="email"
-              placeholder="johndoe@example.com"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              placeholder="johndoe@example.com"
+              className="w-full"
             />
           </div>
-          <Button className="w-full" type={"submit"} disabled={loading}>
-            Invite
+          <Button type="submit" disabled={loading}>
+            {loading ? "Inviting..." : "Invite"}
           </Button>
         </form>
       </DialogContent>
