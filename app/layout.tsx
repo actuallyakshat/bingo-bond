@@ -1,9 +1,10 @@
+import { GlobalProvider } from "@/context/GlobalContext";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import { GlobalProvider } from "@/context/GlobalContext";
 import { Toaster } from "sonner";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({
           <GlobalProvider>
             <Toaster />
             {children}
+            <Analytics />
           </GlobalProvider>
         </body>
       </html>
