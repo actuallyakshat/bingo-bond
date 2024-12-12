@@ -98,14 +98,38 @@ async function sendEmail({
 export async function GET() {
   try {
     // Set up time window for tomorrow
-    const startOfTomorrow = new Date();
-    startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
-    startOfTomorrow.setHours(0, 0, 0, 0);
+    const now = new Date();
 
-    const endOfTomorrow = new Date(startOfTomorrow);
-    endOfTomorrow.setHours(23, 59, 59, 999);
+    // Create tomorrow's date range in UTC
+    const startOfTomorrow = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate() + 1,
+        0,
+        0,
+        0,
+        0
+      )
+    );
 
-    // Fetch plans for tomorrow
+    const endOfTomorrow = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate() + 1,
+        23,
+        59,
+        59,
+        999
+      )
+    );
+
+    console.log("Current Time (UTC):", now.toUTCString());
+    console.log("Start of Tomorrow (UTC):", startOfTomorrow.toUTCString());
+    console.log("End of Tomorrow (UTC):", endOfTomorrow.toUTCString());
+
+    // Query using UTC dates
     const plansTomorrow = await prisma.plan.findMany({
       where: {
         AND: [
@@ -146,6 +170,9 @@ export async function GET() {
         },
       },
     });
+
+    console.log("Plans for Tomorrow:", JSON.stringify(plansTomorrow, null, 2));
+    console.log("Number of Plans for Tomorrow:", plansTomorrow.length);
 
     // Process each plan and send emails
     const emailResults = await Promise.all(
