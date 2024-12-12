@@ -97,52 +97,23 @@ async function sendEmail({
 
 export async function GET() {
   try {
-    // Set up time window for tomorrow
+    // Get current time in UTC
     const now = new Date();
 
-    // Create tomorrow's date range in UTC
-    const startOfTomorrow = new Date(
-      Date.UTC(
-        now.getUTCFullYear(),
-        now.getUTCMonth(),
-        now.getUTCDate() + 1,
-        0,
-        0,
-        0,
-        0
-      )
-    );
+    const startOfNextDay = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    startOfNextDay.setUTCHours(0, 0, 0, 0);
 
-    const endOfTomorrow = new Date(
-      Date.UTC(
-        now.getUTCFullYear(),
-        now.getUTCMonth(),
-        now.getUTCDate() + 1,
-        23,
-        59,
-        59,
-        999
-      )
-    );
+    const endOfNextDay = new Date(startOfNextDay);
+    endOfNextDay.setUTCHours(23, 59, 59, 999);
 
-    console.log("Current Time (UTC):", now.toUTCString());
-    console.log("Start of Tomorrow (UTC):", startOfTomorrow.toUTCString());
-    console.log("End of Tomorrow (UTC):", endOfTomorrow.toUTCString());
-
-    // Query using UTC dates
     const plansTomorrow = await prisma.plan.findMany({
       where: {
-        AND: [
-          {
-            planDate: {
-              gte: startOfTomorrow,
-              lte: endOfTomorrow,
-            },
-          },
-          {
-            remindersSent: false,
-          },
-        ],
+        planDate: {
+          gte: now,
+          lt: endOfNextDay,
+        },
+        completed: false,
+        remindersSent: false,
       },
       include: {
         cell: {
@@ -171,12 +142,9 @@ export async function GET() {
       },
     });
 
-    console.log("Plans for Tomorrow:", JSON.stringify(plansTomorrow, null, 2));
-    console.log("Number of Plans for Tomorrow:", plansTomorrow.length);
-
     // Process each plan and send emails
     const emailResults = await Promise.all(
-      plansTomorrow.map(async (plan: Plan) => {
+      plansTomorrow.map(async (plan) => {
         try {
           // Get recipients who have email preferences enabled
           const recipients = plan.card.bond.members
@@ -192,7 +160,7 @@ export async function GET() {
           }
 
           // Format date for email
-          const planDate = plan.planDate.toLocaleDateString("en-US", {
+          const planDate = new Date(plan.planDate).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -234,7 +202,6 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       message: "Email reminders processed",
-      results: emailResults,
       totalProcessed: plansTomorrow.length,
       successfulSends: emailResults.filter((result) => result.success).length,
     });
