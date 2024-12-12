@@ -1,35 +1,8 @@
-"use server";
+export const revalidate = 0;
 
 import prisma from "@/db";
 import client from "@/mail";
 import { NextResponse } from "next/server";
-
-// interface EmailRecipient {
-//   email: string;
-//   emailPreferences: boolean;
-// }
-
-// interface BondMember {
-//   user: EmailRecipient;
-// }
-
-// interface Bond {
-//   name: string;
-//   members: BondMember[];
-// }
-
-// interface BingoCard {
-//   bond: Bond;
-// }
-
-// interface Plan {
-//   id: string;
-//   planDate: Date;
-//   card: BingoCard;
-//   cell: {
-//     activity: string;
-//   };
-// }
 
 interface SendEmailProps {
   planName: string;
