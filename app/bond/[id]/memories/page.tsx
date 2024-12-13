@@ -5,6 +5,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import BondNotFound from "../_components/BondNotFound";
+import Unauthorised from "@/components/Unauthorised";
 
 type Memory = {
   id: string;
@@ -105,7 +106,7 @@ export default async function MemoriesPage({
   if (!bond) return <BondNotFound />;
 
   const isMember = bond.members.some((member) => member.userId === userId);
-  if (!isMember) return <div>Unauthorized</div>;
+  if (!isMember) return <Unauthorised />;
 
   return (
     <>

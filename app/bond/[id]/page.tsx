@@ -1,7 +1,13 @@
 import { Button } from "@/components/ui/button";
 import prisma from "@/db";
 import { auth } from "@clerk/nextjs/server";
-import { CalendarCheck2, ChevronLeft, User, Menu } from "lucide-react";
+import {
+  CalendarCheck2,
+  ChevronLeft,
+  User,
+  Menu,
+  Calendar,
+} from "lucide-react";
 import Link from "next/link";
 import AddFriendDialog from "./_components/AddFriendDialog";
 import BondNotFound from "./_components/BondNotFound";
@@ -13,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Unauthorised from "@/components/Unauthorised";
 
 interface BondPageProps {
   params: {
@@ -40,8 +47,22 @@ export default async function BondPage({ params }: BondPageProps) {
           },
         },
       },
+      members: {
+        select: {
+          userId: true,
+        },
+      },
     },
   });
+
+  if (!bond) {
+    return <BondNotFound />;
+  }
+
+  const isMember = bond.members.some((member) => member.userId === userId);
+  if (!isMember) {
+    return <Unauthorised />;
+  }
 
   const memories = await prisma.memory.findMany({
     where: {
@@ -52,10 +73,6 @@ export default async function BondPage({ params }: BondPageProps) {
       name: true,
     },
   });
-
-  if (!bond) {
-    return <BondNotFound />;
-  }
 
   return (
     <>
@@ -144,6 +161,10 @@ export default async function BondPage({ params }: BondPageProps) {
           <p className="text-center text-muted-foreground text-xs sm:text-sm font-medium">
             {bond.description}
           </p>
+          <div className="flex justify-center text-xs font-medium text-muted-foreground items-center">
+            <Calendar className="w-4 h-4 mr-1 flex-shrink-0" />
+            <span>{new Date(bond.createdAt).toLocaleDateString()}</span>
+          </div>
         </div>
         <Grid data={bond} memories={memories} />
       </div>

@@ -217,3 +217,52 @@ export async function rejectInvite({ inviteId }: { inviteId: string }) {
     return { success: false, error: "Failed to reject the invite" };
   }
 }
+
+export async function deleteMember({
+  bondId,
+  userId,
+}: {
+  bondId: string;
+  userId: string;
+}) {
+  try {
+    if (!bondId || !userId) {
+      return {
+        success: false,
+        error: "Bond ID and User ID are required",
+      };
+    }
+
+    const bond = await prisma.bond.findUnique({
+      where: { id: bondId },
+      include: { members: true },
+    });
+
+    if (!bond) {
+      return { success: false, error: "Bond not found" };
+    }
+
+    const isMember = bond.members.some((member) => member.userId === userId);
+
+    if (!isMember) {
+      return { success: false, error: "User is not a member of this bond" };
+    }
+
+    const deletedMember = await prisma.member.delete({
+      where: {
+        bondId_userId: {
+          bondId,
+          userId,
+        },
+      },
+    });
+
+    revalidatePath(`/bond/${bondId}`);
+
+    return { success: true, data: deletedMember };
+  } catch (e) {
+    const error = e as Error;
+    console.error(error.message);
+    return { success: false, error: "Failed to remove member from the bond" };
+  }
+}

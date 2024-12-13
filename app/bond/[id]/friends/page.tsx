@@ -1,8 +1,13 @@
 import prisma from "@/db";
 import AddFriendDialog from "../_components/AddFriendDialog";
 import BackToBond from "../_components/BackToBond";
+import RemoveMemberDropdown from "../_components/RemoveMemberDropdown";
+import { auth } from "@clerk/nextjs/server";
+import Unauthorised from "@/components/Unauthorised";
+import BondNotFound from "../_components/BondNotFound";
 
 export default async function Friends({ params }: { params: { id: string } }) {
+  const { userId } = await auth();
   const bond = await prisma.bond.findUnique({
     where: {
       id: params.id,
@@ -16,7 +21,15 @@ export default async function Friends({ params }: { params: { id: string } }) {
     },
   });
 
-  if (!bond) return <div>Bond not found</div>;
+  if (!bond) return <BondNotFound />;
+
+  const isMember = bond.members.some((member) => member.userId === userId);
+
+  if (!isMember) {
+    return <Unauthorised />;
+  }
+
+  const isCreator = userId == bond.createdById;
 
   return (
     <>
@@ -42,11 +55,19 @@ export default async function Friends({ params }: { params: { id: string } }) {
 
         <div className="mt-6 flex flex-col gap-3">
           {bond.members.map((member) => (
-            <div key={member.id}>
-              <h2 className="text-xl font-bold">{member.user.name}</h2>
-              <p className="text-sm text-muted-foreground">
-                {member.user.email}
-              </p>
+            <div key={member.id} className="flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-bold">{member.user.name}</h2>
+                <p className="text-sm text-muted-foreground">
+                  {member.user.email}
+                </p>
+              </div>
+              {isCreator && userId != member.user.id && (
+                <RemoveMemberDropdown
+                  bondId={bond.id}
+                  userId={member.user.id}
+                />
+              )}
             </div>
           ))}
         </div>

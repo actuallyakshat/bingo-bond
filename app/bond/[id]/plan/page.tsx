@@ -6,8 +6,12 @@ import BackToBond from "../_components/BackToBond";
 import BondNotFound from "../_components/BondNotFound";
 import CreatePlanDialog from "./_components/CreatePlanDialog";
 import PlanCard from "./_components/PlanCard";
+import { auth } from "@clerk/nextjs/server";
+import Unauthorised from "@/components/Unauthorised";
 
 export default async function PlanPage({ params }: { params: { id: string } }) {
+  const { userId } = await auth();
+
   const bond = await prisma.bond.findUnique({
     where: {
       id: params.id,
@@ -27,6 +31,9 @@ export default async function PlanPage({ params }: { params: { id: string } }) {
   });
 
   if (!bond || !bond.bingoCard) return <BondNotFound />;
+
+  const isMember = bond.members.some((member) => member.userId === userId);
+  if (!isMember) return <Unauthorised />;
 
   const unplannedCells = bond.bingoCard.cells.filter((cell) => !cell.plan);
   const plannedCells = bond.bingoCard.cells.filter(

@@ -4,6 +4,10 @@ import DeleteMemoryButton from "./_components/DeleteMemoryButton";
 import FileUploadButton from "./_components/FileUploadButton";
 import PictureCard from "./_components/PictureCard";
 import { Calendar } from "lucide-react";
+import { auth } from "@clerk/nextjs/server";
+import Unauthorised from "@/components/Unauthorised";
+import MemoryNotFound from "../../_components/MemoryNotFound";
+import BondNotFound from "../../_components/BondNotFound";
 
 interface MemoryPageProps {
   params: {
@@ -13,12 +17,22 @@ interface MemoryPageProps {
 }
 
 export default async function MemoryPage({ params }: MemoryPageProps) {
+  const { userId } = await auth();
   const memory = await prisma.memory.findUnique({
     where: {
       id: params.memoryId,
     },
     include: {
       pictures: true,
+      bond: {
+        select: {
+          members: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      },
       plan: {
         include: {
           cell: {
@@ -31,7 +45,24 @@ export default async function MemoryPage({ params }: MemoryPageProps) {
     },
   });
 
-  if (!memory) return <div>Memory not found</div>;
+  const bond = await prisma.bond.findUnique({
+    where: {
+      id: params.id,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!bond) return <BondNotFound />;
+
+  if (!memory) return <MemoryNotFound />;
+
+  const isMember = memory.bond.members.some(
+    (member) => member.userId === userId
+  );
+
+  if (!isMember) return <Unauthorised />;
 
   return (
     <div>
