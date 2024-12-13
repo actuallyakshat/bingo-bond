@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Unauthorised from "@/components/Unauthorised";
+import BondName from "./_components/BondName";
 
 interface BondPageProps {
   params: {
@@ -155,9 +156,7 @@ export default async function BondPage({ params }: BondPageProps) {
 
       <div className="max-w-screen-md mx-auto py-5 px-4 sm:px-6">
         <div className="space-y-1.5">
-          <h1 className="text-center font-extrabold text-2xl sm:text-4xl text-primary">
-            {bond.name}
-          </h1>
+          <BondName bondId={bond.id} bondName={bond.name} />
           <p className="text-center text-muted-foreground text-xs sm:text-sm font-medium">
             {bond.description}
           </p>

@@ -266,3 +266,37 @@ export async function deleteMember({
     return { success: false, error: "Failed to remove member from the bond" };
   }
 }
+
+export async function updateBondName({
+  bondId,
+  name,
+}: {
+  bondId: string;
+  name: string;
+}) {
+  try {
+    if (!bondId || !name) {
+      return {
+        success: false,
+        error: "Bond ID and name are required",
+      };
+    }
+
+    const bond = await prisma.bond.update({
+      where: {
+        id: bondId,
+      },
+      data: {
+        name,
+      },
+    });
+
+    revalidatePath(`/bond/${bondId}`);
+
+    return { success: true, data: bond };
+  } catch (e) {
+    const error = e as Error;
+    console.error(error.message);
+    return { success: false, error: "Failed to update the bond name" };
+  }
+}
