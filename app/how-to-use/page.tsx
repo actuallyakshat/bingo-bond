@@ -1,5 +1,4 @@
-import { PlusSquare, Calendar, CheckSquare, ImageIcon } from "lucide-react";
-import Image from "next/image";
+import { Calendar, CheckSquare, ImageIcon, PlusSquare } from "lucide-react";
 import Link from "next/link";
 
 export default function HowToUsePage() {
