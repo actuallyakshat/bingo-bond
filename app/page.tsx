@@ -19,29 +19,37 @@ export default function Home() {
             activity at a time.
           </p>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <SignedIn>
-              <Link
-                className="block w-full rounded bg-primary px-12 py-3 text-sm font-medium text-white shadow hover:bg-rose-700 focus:outline-none focus:ring active:bg-rose-700 sm:w-auto"
-                href="/dashboard"
-              >
-                Dashboard
-              </Link>
-            </SignedIn>
-            <SignedOut>
-              <Link
-                className="block w-full rounded bg-primary px-12 py-3 text-sm font-medium text-white shadow hover:bg-rose-700 focus:outline-none focus:ring active:bg-rose-700 sm:w-auto"
-                href="/sign-in"
-              >
-                Get Started
-              </Link>
-            </SignedOut>
+          <div className="flex flex-col items-center justify-center gap-6">
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <SignedIn>
+                <Link
+                  className="block w-full rounded bg-primary px-12 py-3 text-sm font-medium text-white shadow hover:bg-rose-700 focus:outline-none focus:ring active:bg-rose-700 sm:w-auto"
+                  href="/dashboard"
+                >
+                  Dashboard
+                </Link>
+              </SignedIn>
+              <SignedOut>
+                <Link
+                  className="block w-full rounded bg-primary px-12 py-3 text-sm font-medium text-white shadow hover:bg-rose-700 focus:outline-none focus:ring active:bg-rose-700 sm:w-auto"
+                  href="/sign-in"
+                >
+                  Get Started
+                </Link>
+              </SignedOut>
 
+              <Link
+                className="block w-full rounded px-12 py-3 text-sm font-medium shadow text-primary hover:text-rose-700 focus:outline-none focus:ring sm:w-auto"
+                href="www.github.com/actuallyakshat/bingo-bond"
+              >
+                Github
+              </Link>
+            </div>
             <Link
-              className="block w-full rounded px-12 py-3 text-sm font-medium shadow text-primary hover:text-rose-700 focus:outline-none focus:ring sm:w-auto"
-              href="www.github.com/actuallyakshat/bingo-bond"
+              href={"/how-to-use"}
+              className="rounded w-full max-w-xs text-sm hover:underline font-medium text-primary"
             >
-              Github
+              How to Use Bingo Bond?
             </Link>
           </div>
         </div>
