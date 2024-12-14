@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bingo Bond
+Bingo Bond allows you to create bingo cards of plans with your friends so that you can enjoy time with your loved ones, one activity at a time.
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Inorder to test the application locally:
+1. Clone the repository: `git clone https://github.com/actuallyakshat/bingo-bond.git`
+2. Install dependencies: `pnpm install`
+3. Set Environment Variables:
 ```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+PRISMA_FIELD_ENCRYPTION_KEY=
+CLOAK_KEYCHAIN=
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
+NEXT_PUBLIC_CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+MAIL_HOST=
+MAIL_USER=
+MAIL_PASS=
+DATABASE_URL=
+```
+4. Migrate Prisma Scehmas: `pnpm dlx prisma migrate dev --name migration_name` and then `npx prisma generate`  
+5. Run the local server: `pnpm dev`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Tech Stack Used
+- Next.js
+- Typescript
+- Cloudinary (For Image Uploads)
+- Nodemailer (For Email Reminders)
+- ShadCN UI
+- Clerk Auth
+- Tailwind
+- Prisma-Field-Encryption
+- Cron Jobs
+- Postgres (Neon Tech)
+- Prisma
+- Vercel Analytics
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Have any queries?
+Feel free to contact me on LinkedIn or Instagram! You can find the link to my socials from my GitHub Profile.
